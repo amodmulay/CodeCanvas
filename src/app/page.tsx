@@ -2,24 +2,25 @@
 "use client";
 
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { File, GitMerge, List } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { File, GitMerge, Play, Bug } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
-import { TerminalPanel } from "@/components/code-canvas/terminal-panel";
+import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
 import { type File as FileType, getFileById, fileSystem } from "@/lib/code-canvas-data";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { SourceControlPanel } from "@/components/code-canvas/source-control-panel";
 import { IdeSidebar } from "@/components/code-canvas/ide-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-type View = "files" | "source-control";
+type View = "files" | "source-control" | "run";
 
 export default function CodeCanvas() {
   const [isMounted, setIsMounted] = useState(false);
   const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<View>("files");
+  const terminalRef = useRef<TerminalHandle>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -85,6 +86,13 @@ export default function CodeCanvas() {
     setActiveFileId(fileId);
   };
 
+  const handleRun = () => {
+    setActiveView('run');
+    if (terminalRef.current) {
+        terminalRef.current.executeCommand('npm run dev');
+    }
+  }
+
   const ActivityBar = () => (
     <div className="flex flex-col items-center w-12 py-4 bg-card border-r border-border">
       <button 
@@ -100,6 +108,20 @@ export default function CodeCanvas() {
         title="Source Control"
       >
         <GitMerge size={24} />
+      </button>
+      <button 
+        onClick={handleRun}
+        className={`p-2 mt-4 rounded-md ${activeView === 'run' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Run and Debug"
+      >
+        <Play size={24} />
+      </button>
+      <button 
+        className="p-2 mt-4 rounded-md text-muted-foreground"
+        title="Debug"
+        disabled
+      >
+        <Bug size={24} />
       </button>
     </div>
   );
@@ -127,6 +149,7 @@ export default function CodeCanvas() {
           <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
             {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
             {activeView === 'source-control' && <SourceControlPanel />}
+            {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={82}>
@@ -141,7 +164,7 @@ export default function CodeCanvas() {
                   </ResizablePanel>
                   <ResizableHandle withHandle />
                   <ResizablePanel defaultSize={30} minSize={10} collapsible={true}>
-                      <TerminalPanel />
+                      <TerminalPanel ref={terminalRef} />
                   </ResizablePanel>
               </ResizablePanelGroup>
           </ResizablePanel>
