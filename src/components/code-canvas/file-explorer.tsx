@@ -1,11 +1,14 @@
+
 "use client"
 
 import * as React from "react"
 import { useState } from "react"
-import { ChevronRight, Folder, File as FileIcon, FileJson, FileText } from "lucide-react"
+import { ChevronRight, Folder, File as FileIcon, FileJson, FileText, Cpu, Smartphone } from "lucide-react"
 
 import { type FileSystemNode, type File } from "@/lib/code-canvas-data"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Separator } from "@/components/ui/separator"
 
 interface FileExplorerProps {
   fileSystem: FileSystemNode[]
@@ -75,6 +78,14 @@ const Node: React.FC<{ node: FileSystemNode; onFileClick: (file: File) => void; 
   )
 }
 
+const containers = [
+    { name: 'prod-app-server-1', type: 'Graviton', region: 'us-east-1' },
+    { name: 'prod-app-server-2', type: 'Graviton', region: 'us-east-1' },
+    { name: 'cuttlefish-emulator-1', type: 'Cuttlefish', region: 'us-west-2' },
+    { name: 'cuttlefish-emulator-2', type: 'Cuttlefish', region: 'us-west-2' },
+    { name: 'staging-db-master', type: 'Graviton', region: 'eu-west-1' },
+];
+
 export function FileExplorer({ fileSystem, onFileClick }: FileExplorerProps) {
   return (
     <div className="h-full w-full bg-card flex flex-col">
@@ -82,13 +93,36 @@ export function FileExplorer({ fileSystem, onFileClick }: FileExplorerProps) {
             <h2 className="text-lg font-semibold tracking-tight">Panasonic Avionics Corporation</h2>
             <p className="text-sm text-muted-foreground">File Explorer</p>
         </div>
-      <ScrollArea className="flex-grow">
-        <div className="p-2">
-            {fileSystem.map((node) => (
-                <Node key={node.id} node={node} onFileClick={onFileClick} level={0} />
-            ))}
-        </div>
-      </ScrollArea>
+        <ScrollArea className="flex-grow">
+            <div className="p-2">
+                {fileSystem.map((node) => (
+                    <Node key={node.id} node={node} onFileClick={onFileClick} level={0} />
+                ))}
+            </div>
+        </ScrollArea>
+
+        <Separator />
+        
+        <Accordion type="single" collapsible defaultValue="item-1" className="w-full p-2">
+            <AccordionItem value="item-1" className="border-none">
+                <AccordionTrigger className="text-sm font-medium hover:no-underline p-2 rounded-md hover:bg-muted">
+                    Running Containers (AWS)
+                </AccordionTrigger>
+                <AccordionContent>
+                    <div className="pl-4 space-y-2 pt-2">
+                        {containers.map((container, index) => (
+                            <div key={index} className="flex items-center text-sm">
+                                {container.type === 'Graviton' ? <Cpu className="h-4 w-4 mr-2 flex-shrink-0 text-green-400" /> : <Smartphone className="h-4 w-4 mr-2 flex-shrink-0 text-purple-400" />}
+                                <div className="flex flex-col">
+                                    <span className="font-medium">{container.name}</span>
+                                    <span className="text-xs text-muted-foreground">{container.region} - {container.type}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
     </div>
   )
 }
