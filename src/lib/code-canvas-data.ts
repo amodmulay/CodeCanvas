@@ -138,8 +138,126 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 `;
 
+const androidAutoApiContent = `
+# Android Auto App Library API Reference
+
+This documentation provides a detailed reference for the Android Auto App Library, which enables developers to build navigation, parking, and charging apps for Android Auto.
+
+---
+
+## Core Components
+
+The library is built around a few key components that manage the app's lifecycle and UI.
+
+### 1. CarAppService
+
+The entry point for your Android Auto app. This service is responsible for creating a \`Session\` when the car connects.
+
+\`\`\`java
+public class MyCarAppService extends CarAppService {
+    @NonNull
+    @Override
+    public Session onCreateSession() {
+        return new MySession();
+    }
+}
+\`\`\`
+
+### 2. Session
+
+Manages the app's lifecycle, from connection to disconnection. It's responsible for creating the initial \`Screen\` to be displayed.
+
+\`\`\`java
+public class MySession extends Session {
+    @NonNull
+    @Override
+    public Screen onCreateScreen(@NonNull Intent intent) {
+        return new MainScreen(getCarContext());
+    }
+}
+\`\`\`
+
+### 3. Screen
+
+Represents a screen in your app's UI. You manage the UI by pushing and popping screens from a screen stack.
+
+\`\`\`java
+public class MainScreen extends Screen {
+    public MainScreen(@NonNull CarContext carContext) {
+        super(carContext);
+    }
+
+    @NonNull
+    @Override
+    public Template onGetTemplate() {
+        Row row = new Row.Builder()
+            .setTitle("Welcome to Panasonic Avionics!")
+            .addText("Select an option to continue.")
+            .build();
+
+        return new PaneTemplate.Builder(new Pane.Builder().addRow(row).build())
+            .setHeaderAction(Action.APP_ICON)
+            .build();
+    }
+}
+\`\`\`
+
+---
+
+## UI Templates
+
+Android Auto provides a set of curated templates to ensure a consistent and safe user experience.
+
+- **PaneTemplate**: A template that shows a simple pane of information with rows of text.
+- **GridTemplate**: Displays a grid of items, typically for selection.
+- **PlaceListMapTemplate**: Shows a map with a corresponding list of places.
+- **NavigationTemplate**: The primary template for turn-by-turn navigation apps.
+
+### Example: Using a GridTemplate
+
+\`\`\`java
+GridItem item = new GridItem.Builder()
+    .setTitle("System Diagnostics")
+    .setText("View system status")
+    .setImage(new CarIcon.Builder(R.drawable.ic_settings).build())
+    .setOnClickListener(() -> {
+        // Handle click event
+    })
+    .build();
+
+return new GridTemplate.Builder()
+    .setTitle("Main Menu")
+    .addGridItem(item)
+    .build();
+\`\`\`
+
+---
+
+## Hardware Access
+
+Access vehicle hardware data through the \`CarHardwareManager\`.
+
+### Available Data:
+- **CarInfo**: Model, year, make.
+- **EnergyLevel**: Fuel or battery level.
+- **Speed**: Vehicle speed.
+
+### Example: Getting Vehicle Speed
+
+\`\`\`java
+CarHardwareManager hardwareManager = getCarContext().getCarService(CarHardwareManager.class);
+Speed speed = hardwareManager.getCarSpeed();
+
+speed.getDisplaySpeedMetersPerSecond().setListener(speedValue -> {
+    // Update UI with the new speed
+});
+\`\`\`
+
+For more details, refer to the official Android for Cars App Library documentation.
+`;
+
 export const apiDocs: File[] = [
-    { id: 'android-api-doc', name: 'Android API', content: 'Comprehensive documentation for the Android API...', type: 'file' },
+    { id: 'android-api-doc', name: 'Android API', content: androidAutoApiContent, type: 'file' },
     { id: 'golang-doc', name: 'Golang Documentation', content: 'Extensive documentation for the Go programming language...', type: 'file' },
     { id: 'typescript-doc', name: 'TypeScript Documentation', content: 'Detailed documentation for TypeScript...', type: 'file' },
 ];
