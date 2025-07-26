@@ -79,6 +79,65 @@ const packageJsonContent = `
 }
 `;
 
+const telemetryTsContent = `
+import { NextApiRequest, NextApiResponse } from 'next';
+
+// A mock in-memory store for telemetry data
+const telemetryDataStore: Record<string, any[]> = {};
+
+/**
+ * Represents a single telemetry event.
+ */
+interface TelemetryEvent {
+  timestamp: number;
+  source: 'cuttlefish' | 'graviton';
+  type: 'performance' | 'error' | 'usage';
+  payload: Record<string, any>;
+}
+
+/**
+ * @swagger
+ * /api/telemetry:
+ *   post:
+ *     description: Ingests a new telemetry event from a device.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               deviceId:
+ *                 type: string
+ *               event:
+ *                 $ref: '#/components/schemas/TelemetryEvent'
+ *     responses:
+ *       201:
+ *         description: Event successfully ingested.
+ */
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    const { deviceId, event }: { deviceId: string; event: TelemetryEvent } = req.body;
+    
+    if (!deviceId || !event) {
+      return res.status(400).json({ message: 'Missing deviceId or event data.' });
+    }
+
+    if (!telemetryDataStore[deviceId]) {
+      telemetryDataStore[deviceId] = [];
+    }
+
+    telemetryDataStore[deviceId].push(event);
+
+    console.log(\`Received event from \${deviceId}: \`, event);
+    return res.status(201).json({ message: 'Event ingested' });
+  }
+
+  res.setHeader('Allow', ['POST']);
+  res.status(405).end(\`Method \${req.method} Not Allowed\`);
+}
+`;
+
 export const apiDocs: File[] = [
     { id: 'android-api-doc', name: 'Android API', content: 'Comprehensive documentation for the Android API...', type: 'file' },
     { id: 'golang-doc', name: 'Golang Documentation', content: 'Extensive documentation for the Go programming language...', type: 'file' },
@@ -119,6 +178,7 @@ export const fileSystem: FileSystemNode[] = [
                 ]
               },
               { id: 'user.ts', name: 'user.ts', type: 'file', content: '// User API routes' },
+              { id: 'telemetry.ts', name: 'telemetry.ts', type: 'file', content: telemetryTsContent },
             ],
           },
           { id: 'layout.tsx', name: 'layout.tsx', type: 'file', content: '// Root layout' },

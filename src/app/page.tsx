@@ -39,9 +39,11 @@ export default function CodeCanvas() {
         }
       } else {
         const readmeFile = getFileById("readme");
-        if (readmeFile) {
-          setOpenFiles([readmeFile]);
-          setActiveFileId(readmeFile.id);
+        const telemetryFile = getFileById("telemetry.ts");
+        const filesToOpen = [readmeFile, telemetryFile].filter((f): f is FileType => !!f);
+        if (filesToOpen.length > 0) {
+          setOpenFiles(filesToOpen);
+          setActiveFileId(filesToOpen[0].id);
         }
       }
     } catch (error) {
