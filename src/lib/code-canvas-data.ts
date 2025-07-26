@@ -1,0 +1,132 @@
+export interface File {
+  id: string;
+  name: string;
+  content: string;
+  type: 'file';
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  children: (File | Folder)[];
+  type: 'folder';
+}
+
+export type FileSystemNode = File | Folder;
+
+const readmeContent = `
+# CodeCanvas
+
+Welcome to CodeCanvas! This is a simple interactive web page designed to emulate the visual layout and feel of VS Code.
+
+## Features
+
+- **File Explorer**: An interactive sidebar to navigate through a mock file system.
+- **Tabbed Editor**: View and switch between multiple "open" files.
+- **Integrated Terminal**: A collapsible panel simulating a terminal.
+- **State Persistence**: Your open files are saved in your browser's local storage.
+
+Enjoy exploring the demo!
+`;
+
+const pageTsxContent = `
+"use client";
+
+import * as React from "react";
+
+export default function Home() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
+          Get started by editing&nbsp;
+          <code className="font-mono font-bold">src/app/page.tsx</code>
+        </p>
+      </div>
+    </main>
+  );
+}
+`;
+
+const packageJsonContent = `
+{
+  "name": "code-canvas",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "lucide-react": "^0.378.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
+`;
+
+export const fileSystem: FileSystemNode[] = [
+  {
+    id: 'src',
+    name: 'src',
+    type: 'folder',
+    children: [
+      {
+        id: 'app',
+        name: 'app',
+        type: 'folder',
+        children: [
+          {
+            id: 'page.tsx',
+            name: 'page.tsx',
+            type: 'file',
+            content: pageTsxContent,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'package.json',
+    name: 'package.json',
+    type: 'file',
+    content: packageJsonContent,
+  },
+  {
+    id: 'readme',
+    name: 'README.md',
+    type: 'file',
+    content: readmeContent,
+  },
+];
+
+const flattenNodes = (nodes: FileSystemNode[]): File[] => {
+  let files: File[] = [];
+  for (const node of nodes) {
+    if (node.type === 'file') {
+      files.push(node);
+    } else {
+      files = files.concat(flattenNodes(node.children));
+    }
+  }
+  return files;
+};
+
+const allFiles = flattenNodes(fileSystem);
+
+export const getFileById = (id: string): File | undefined => {
+    return allFiles.find(file => file.id === id);
+}
