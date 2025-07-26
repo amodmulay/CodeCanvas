@@ -8,14 +8,12 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { type File, apiDocs } from "@/lib/code-canvas-data"
