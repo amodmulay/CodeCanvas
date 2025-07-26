@@ -17,11 +17,17 @@ const getFileIcon = (fileName: string) => {
   if (fileName.endsWith('.json')) {
     return <FileJson className="h-4 w-4 mr-2 flex-shrink-0 text-yellow-400" />
   }
-  if (fileName.endsWith('.tsx')) {
+  if (fileName.endsWith('.tsx') || fileName.endsWith('.ts')) {
     return <FileIcon className="h-4 w-4 mr-2 flex-shrink-0 text-blue-400" />
   }
   if (fileName.endsWith('.md')) {
     return <FileText className="h-4 w-4 mr-2 flex-shrink-0 text-gray-400" />
+  }
+   if (fileName.endsWith('.js')) {
+    return <FileIcon className="h-4 w-4 mr-2 flex-shrink-0 text-yellow-500" />
+  }
+   if (fileName.endsWith('.css')) {
+    return <FileIcon className="h-4 w-4 mr-2 flex-shrink-0 text-purple-400" />
   }
   return <FileIcon className="h-4 w-4 mr-2 flex-shrink-0 text-gray-400" />
 }
