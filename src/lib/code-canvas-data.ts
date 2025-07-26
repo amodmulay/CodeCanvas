@@ -15,9 +15,9 @@ export interface Folder {
 export type FileSystemNode = File | Folder;
 
 const readmeContent = `
-# CodeCanvas
+# Panasonic Avionics Corporation
 
-Welcome to CodeCanvas! This is a simple interactive web page designed to emulate the visual layout and feel of VS Code.
+Welcome to Panasonic Avionics Corporation! This is a simple interactive web page designed to emulate the visual layout and feel of VS Code.
 
 ## Features
 
@@ -50,7 +50,7 @@ export default function Home() {
 
 const packageJsonContent = `
 {
-  "name": "code-canvas",
+  "name": "panasonic-avionics-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {

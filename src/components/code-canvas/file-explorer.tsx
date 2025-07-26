@@ -79,7 +79,7 @@ export function FileExplorer({ fileSystem, onFileClick }: FileExplorerProps) {
   return (
     <div className="h-full w-full bg-card flex flex-col">
         <div className="p-4 flex-shrink-0">
-            <h2 className="text-lg font-semibold tracking-tight">CodeCanvas</h2>
+            <h2 className="text-lg font-semibold tracking-tight">Panasonic Avionics Corporation</h2>
             <p className="text-sm text-muted-foreground">File Explorer</p>
         </div>
       <ScrollArea className="flex-grow">

@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'CodeCanvas',
+  title: 'Panasonic Avionics Corporation',
   description: 'A VS Code-like web interface.',
 };
 

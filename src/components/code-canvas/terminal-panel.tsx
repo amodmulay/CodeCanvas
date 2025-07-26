@@ -12,7 +12,7 @@ export function TerminalPanel() {
         </div>
         <div className="flex-grow bg-background p-4 overflow-auto">
             <pre className="font-code text-sm text-muted-foreground">
-                <p>Welcome to the CodeCanvas terminal!</p>
+                <p>Welcome to the terminal!</p>
                 <p className="text-green-400">$ npm install</p>
                 <p>up to date, audited 15 packages in 1s</p>
                 <br />
