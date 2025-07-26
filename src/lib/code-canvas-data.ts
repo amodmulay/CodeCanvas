@@ -87,6 +87,15 @@ export const apiDocs: File[] = [
 
 export const fileSystem: FileSystemNode[] = [
   {
+    id: 'public',
+    name: 'public',
+    type: 'folder',
+    children: [
+      { id: 'favicon.ico', name: 'favicon.ico', type: 'file', content: '' },
+      { id: 'logo.svg', name: 'logo.svg', type: 'file', content: '<svg>...</svg>' },
+    ],
+  },
+  {
     id: 'src',
     name: 'src',
     type: 'folder',
@@ -97,27 +106,81 @@ export const fileSystem: FileSystemNode[] = [
         type: 'folder',
         children: [
           {
-            id: 'page.tsx',
-            name: 'page.tsx',
-            type: 'file',
-            content: pageTsxContent,
+            id: 'api',
+            name: 'api',
+            type: 'folder',
+            children: [
+              {
+                id: 'auth',
+                name: 'auth',
+                type: 'folder',
+                children: [
+                  { id: 'route.ts', name: 'route.ts', type: 'file', content: '// Authentication API routes' },
+                ]
+              },
+              { id: 'user.ts', name: 'user.ts', type: 'file', content: '// User API routes' },
+            ],
           },
+          { id: 'layout.tsx', name: 'layout.tsx', type: 'file', content: '// Root layout' },
+          { id: 'page.tsx', name: 'page.tsx', type: 'file', content: pageTsxContent },
+        ],
+      },
+      {
+        id: 'components',
+        name: 'components',
+        type: 'folder',
+        children: [
+            {
+                id: 'common',
+                name: 'common',
+                type: 'folder',
+                children: [
+                  { id: 'Button.tsx', name: 'Button.tsx', type: 'file', content: '// Button component' },
+                  { id: 'Input.tsx', name: 'Input.tsx', type: 'file', content: '// Input component' },
+                ]
+            },
+            {
+                id: 'layout',
+                name: 'layout',
+                type: 'folder',
+                children: [
+                  { id: 'Header.tsx', name: 'Header.tsx', type: 'file', content: '// Header component' },
+                  { id: 'Footer.tsx', name: 'Footer.tsx', type: 'file', content: '// Footer component' },
+                ]
+            }
+        ],
+      },
+      {
+        id: 'hooks',
+        name: 'hooks',
+        type: 'folder',
+        children: [
+          { id: 'use-auth.ts', name: 'use-auth.ts', type: 'file', content: '// Auth hook' },
+        ],
+      },
+      {
+        id: 'lib',
+        name: 'lib',
+        type: 'folder',
+        children: [
+          { id: 'utils.ts', name: 'utils.ts', type: 'file', content: '// Utility functions' },
+        ],
+      },
+      {
+        id: 'styles',
+        name: 'styles',
+        type: 'folder',
+        children: [
+          { id: 'globals.css', name: 'globals.css', type: 'file', content: '/* Global styles */' },
         ],
       },
     ],
   },
-  {
-    id: 'package.json',
-    name: 'package.json',
-    type: 'file',
-    content: packageJsonContent,
-  },
-  {
-    id: 'readme',
-    name: 'README.md',
-    type: 'file',
-    content: readmeContent,
-  },
+  { id: '.eslintrc.json', name: '.eslintrc.json', type: 'file', content: '{ "extends": "next/core-web-vitals" }' },
+  { id: 'next.config.js', name: 'next.config.js', type: 'file', content: '/** @type {import(\'next\').NextConfig} */\nconst nextConfig = {};\nmodule.exports = nextConfig;' },
+  { id: 'package.json', name: 'package.json', type: 'file', content: packageJsonContent },
+  { id: 'readme', name: 'README.md', type: 'file', content: readmeContent },
+  { id: 'tsconfig.json', name: 'tsconfig.json', type: 'file', content: '{ "compilerOptions": { ... } }' },
 ];
 
 const flattenNodes = (nodes: FileSystemNode[]): File[] => {
