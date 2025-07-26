@@ -3,9 +3,9 @@
 
 import * as React from "react"
 import { useState } from "react"
-import { ChevronRight, Folder, File as FileIcon, FileJson, FileText, Cpu, Smartphone } from "lucide-react"
+import { ChevronRight, Folder, File as FileIcon, FileJson, FileText, Cpu, Smartphone, BookMarked } from "lucide-react"
 
-import { type FileSystemNode, type File } from "@/lib/code-canvas-data"
+import { type FileSystemNode, type File, apiDocs } from "@/lib/code-canvas-data"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Separator } from "@/components/ui/separator"
@@ -105,6 +105,23 @@ export function FileExplorer({ fileSystem, onFileClick }: FileExplorerProps) {
         
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full p-2">
             <AccordionItem value="item-1" className="border-none">
+                <AccordionTrigger className="text-sm font-medium hover:no-underline p-2 rounded-md hover:bg-muted">
+                    API Documentation
+                </AccordionTrigger>
+                <AccordionContent>
+                    <div className="pl-4 space-y-2 pt-2">
+                        {apiDocs.map((apiDoc, index) => (
+                            <div key={index} className="flex items-center text-sm cursor-pointer hover:bg-muted p-1 rounded-md" onClick={() => onFileClick(apiDoc)}>
+                                <BookMarked className="h-4 w-4 mr-2 flex-shrink-0 text-blue-400" />
+                                <div className="flex flex-col">
+                                    <span className="font-medium">{apiDoc.name}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2" className="border-none">
                 <AccordionTrigger className="text-sm font-medium hover:no-underline p-2 rounded-md hover:bg-muted">
                     Running Containers (AWS)
                 </AccordionTrigger>

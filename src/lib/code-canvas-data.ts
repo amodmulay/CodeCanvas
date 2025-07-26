@@ -1,3 +1,4 @@
+
 export interface File {
   id: string;
   name: string;
@@ -78,6 +79,12 @@ const packageJsonContent = `
 }
 `;
 
+export const apiDocs: File[] = [
+    { id: 'android-api-doc', name: 'Android API', content: 'Comprehensive documentation for the Android API...', type: 'file' },
+    { id: 'golang-doc', name: 'Golang Documentation', content: 'Extensive documentation for the Go programming language...', type: 'file' },
+    { id: 'typescript-doc', name: 'TypeScript Documentation', content: 'Detailed documentation for TypeScript...', type: 'file' },
+];
+
 export const fileSystem: FileSystemNode[] = [
   {
     id: 'src',
@@ -125,7 +132,7 @@ const flattenNodes = (nodes: FileSystemNode[]): File[] => {
   return files;
 };
 
-const allFiles = flattenNodes(fileSystem);
+const allFiles = [...flattenNodes(fileSystem), ...apiDocs];
 
 export const getFileById = (id: string): File | undefined => {
     return allFiles.find(file => file.id === id);
