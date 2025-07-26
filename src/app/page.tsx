@@ -1,17 +1,23 @@
+
 "use client";
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { File, GitMerge, List } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel } from "@/components/code-canvas/terminal-panel";
-import { type File, getFileById, fileSystem } from "@/lib/code-canvas-data";
+import { type File as FileType, getFileById, fileSystem } from "@/lib/code-canvas-data";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { SourceControlPanel } from "@/components/code-canvas/source-control-panel";
+
+type View = "files" | "source-control";
 
 export default function CodeCanvas() {
   const [isMounted, setIsMounted] = useState(false);
-  const [openFiles, setOpenFiles] = useState<File[]>([]);
+  const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<View>("files");
 
   useEffect(() => {
     setIsMounted(true);
@@ -24,13 +30,12 @@ export default function CodeCanvas() {
       
       if (initialOpenFiles.length > 0) {
         setOpenFiles(initialOpenFiles);
-        if (initialActiveFileId && initialOpenFiles.some((f: File) => f.id === initialActiveFileId)) {
+        if (initialActiveFileId && initialOpenFiles.some((f: FileType) => f.id === initialActiveFileId)) {
           setActiveFileId(initialActiveFileId);
         } else {
           setActiveFileId(initialOpenFiles[0].id);
         }
       } else {
-        // Start with a default file open
         const readmeFile = getFileById("readme");
         if (readmeFile) {
           setOpenFiles([readmeFile]);
@@ -49,7 +54,7 @@ export default function CodeCanvas() {
     }
   }, [openFiles, activeFileId, isMounted]);
 
-  const handleOpenFile = (file: File) => {
+  const handleOpenFile = (file: FileType) => {
     if (!openFiles.some((f) => f.id === file.id)) {
       setOpenFiles((prev) => [...prev, file]);
     }
@@ -75,6 +80,25 @@ export default function CodeCanvas() {
   const handleSetActiveFile = (fileId: string) => {
     setActiveFileId(fileId);
   };
+
+  const ActivityBar = () => (
+    <div className="flex flex-col items-center w-12 py-4 bg-card border-r border-border">
+      <button 
+        onClick={() => setActiveView("files")}
+        className={`p-2 rounded-md ${activeView === 'files' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Files"
+      >
+        <File size={24} />
+      </button>
+      <button 
+        onClick={() => setActiveView("source-control")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'source-control' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Source Control"
+      >
+        <GitMerge size={24} />
+      </button>
+    </div>
+  );
   
   if (!isMounted) {
     return (
@@ -91,10 +115,12 @@ export default function CodeCanvas() {
   }
 
   return (
-    <div className="h-screen w-full bg-background text-foreground font-body">
+    <div className="h-screen w-full bg-background text-foreground font-body flex">
+      <ActivityBar />
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
-          <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />
+          {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
+          {activeView === 'source-control' && <SourceControlPanel />}
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={82}>
