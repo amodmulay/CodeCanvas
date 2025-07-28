@@ -23,8 +23,8 @@ export default function LandingPage() {
 
       <main className="flex-grow flex items-center justify-center pt-20">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:gap-24">
-            <div className="flex flex-col justify-center space-y-4">
+          <div className="grid gap-6 lg:grid-cols-1 lg:gap-12 xl:gap-24">
+            <div className="flex flex-col justify-center space-y-4 text-center items-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                 How <span className="text-primary">product</span> & <span className="text-primary">engineering</span> teams work together with AI
               </h1>
@@ -39,15 +39,6 @@ export default function LandingPage() {
                   </Button>
                 </Link>
               </div>
-            </div>
-            <div className="relative flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-50"></div>
-                <img
-                  src="https://placehold.co/600x400.png"
-                  alt="Code Editor"
-                  data-ai-hint="code editor"
-                  className="rounded-lg shadow-2xl z-10 opacity-20"
-                />
             </div>
           </div>
         </div>
