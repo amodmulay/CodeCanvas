@@ -1,4 +1,4 @@
-# Panasonic Avionics Studio
+# Avionics Studio
 
 Technologies that are being evaluated for this topic
 1. Eclipse Theia platform: https://theia-ide.org/theia-platform/
