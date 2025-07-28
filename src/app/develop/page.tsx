@@ -152,7 +152,7 @@ export default function CodeCanvas() {
   return (
     <SidebarProvider>
       <div className="h-screen w-full bg-background text-foreground font-body flex flex-col">
-        <Menubar className="rounded-none border-b border-border">
+        <Menubar className="rounded-none border-b border-border px-2">
           <MenubarMenu>
             <MenubarTrigger>File</MenubarTrigger>
           </MenubarMenu>
