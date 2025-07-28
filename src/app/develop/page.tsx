@@ -12,6 +12,15 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { SourceControlPanel } from "@/components/code-canvas/source-control-panel";
 import { IdeSidebar } from "@/components/code-canvas/ide-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 
 type View = "files" | "source-control" | "run";
 
@@ -142,33 +151,61 @@ export default function CodeCanvas() {
 
   return (
     <SidebarProvider>
-      <div className="h-screen w-full bg-background text-foreground font-body flex">
-        <IdeSidebar onFileClick={handleOpenFile} />
-        <ActivityBar />
-        <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-          <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
-            {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
-            {activeView === 'source-control' && <SourceControlPanel />}
-            {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={82}>
-              <ResizablePanelGroup direction="vertical">
-                  <ResizablePanel defaultSize={70} minSize={30}>
-                      <EditorTabs
-                          openFiles={openFiles}
-                          activeFileId={activeFileId}
-                          onCloseFile={handleCloseFile}
-                          onSetActiveFile={handleSetActiveFile}
-                      />
-                  </ResizablePanel>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize={30} minSize={10} collapsible={true}>
-                      <TerminalPanel ref={terminalRef} />
-                  </ResizablePanel>
-              </ResizablePanelGroup>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+      <div className="h-screen w-full bg-background text-foreground font-body flex flex-col">
+        <Menubar className="rounded-none border-b border-border">
+          <MenubarMenu>
+            <MenubarTrigger>File</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>View</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Extensions</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Options</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Terminal</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Run</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Go</MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Help</MenubarTrigger>
+          </MenubarMenu>
+        </Menubar>
+        <div className="flex flex-grow">
+          <IdeSidebar onFileClick={handleOpenFile} />
+          <ActivityBar />
+          <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+            <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
+              {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
+              {activeView === 'source-control' && <SourceControlPanel />}
+              {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={82}>
+                <ResizablePanelGroup direction="vertical">
+                    <ResizablePanel defaultSize={70} minSize={30}>
+                        <EditorTabs
+                            openFiles={openFiles}
+                            activeFileId={activeFileId}
+                            onCloseFile={handleCloseFile}
+                            onSetActiveFile={handleSetActiveFile}
+                        />
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={30} minSize={10} collapsible={true}>
+                        <TerminalPanel ref={terminalRef} />
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
       </div>
     </SidebarProvider>
   );
