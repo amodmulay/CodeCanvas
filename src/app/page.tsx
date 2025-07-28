@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -48,7 +49,7 @@ export default function LandingPage() {
               width={600}
               height={400}
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
-              data-ai-hint="abstract hero"
+              data-ai-hint="team collaboration"
             />
           </div>
         </div>
