@@ -28,6 +28,17 @@ Welcome to Panasonic Avionics Corporation! This is a simple interactive web page
 - **State Persistence**: Your open files are saved in your browser's local storage.
 
 Enjoy exploring the demo!
+
+\`\`\`mermaid
+flowchart TD
+    A[Start] --> B{Is it responsive?};
+    B -- Yes --> C[Check accessibility];
+    B -- No --> D[Apply responsive styles];
+    D --> C;
+    C -- Yes --> F[Launch!];
+    C -- No --> E[Improve accessibility];
+    E --> F;
+\`\`\`
 `;
 
 const pageTsxContent = `

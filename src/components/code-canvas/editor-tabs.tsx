@@ -6,6 +6,7 @@ import { X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { type File } from "@/lib/code-canvas-data"
+import { MermaidChart } from "./mermaid-chart"
 
 interface EditorTabsProps {
   openFiles: File[]
@@ -51,9 +52,13 @@ export function EditorTabs({ openFiles, activeFileId, onCloseFile, onSetActiveFi
         {openFiles.map((file) => (
           <TabsContent key={file.id} value={file.id} className="h-full m-0">
               <ScrollArea className="h-full w-full">
-                <pre className="p-4 font-code text-sm leading-relaxed">
-                  <code className="text-foreground">{file.content}</code>
-                </pre>
+                {file.name === 'README.md' && file.content.includes("```mermaid") ? (
+                  <MermaidChart content={file.content} />
+                ) : (
+                  <pre className="p-4 font-code text-sm leading-relaxed">
+                    <code className="text-foreground">{file.content}</code>
+                  </pre>
+                )}
               </ScrollArea>
           </TabsContent>
         ))}
