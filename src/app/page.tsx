@@ -1,7 +1,7 @@
-
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Plane, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -23,14 +23,16 @@ export default function LandingPage() {
 
       <main className="flex-grow flex items-center justify-center pt-20">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-1 lg:gap-12 xl:gap-24">
-            <div className="flex flex-col justify-center space-y-4 text-center items-center">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                How <span className="text-primary">product</span> & <span className="text-primary">engineering</span> teams work together with AI
-              </h1>
-              <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                Turn text into working web apps. Our platform handles the code while you focus on your vision, letting you create and launch applications directly from your browser.
-              </p>
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-[1fr_550px] xl:gap-24">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  How <span className="text-primary">product</span> & <span className="text-primary">engineering</span> teams work together with AI
+                </h1>
+                <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                  Turn text into working web apps. Our platform handles the code while you focus on your vision, letting you create and launch applications directly from your browser.
+                </p>
+              </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link href="/develop">
                   <Button size="lg" className="w-full min-[400px]:w-auto">
@@ -40,6 +42,14 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
+            <Image
+              src="https://placehold.co/600x400.png"
+              alt="Hero"
+              width={600}
+              height={400}
+              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
+              data-ai-hint="abstract hero"
+            />
           </div>
         </div>
       </main>
