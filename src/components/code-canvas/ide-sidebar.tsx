@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { BookMarked, Cpu, Smartphone } from "lucide-react"
+import { BookMarked, Cpu, Smartphone, Puzzle } from "lucide-react"
 
 import {
   Sidebar,
@@ -75,6 +75,23 @@ export function IdeSidebar({ onFileClick }: IdeSidebarProps) {
                       </div>
                     </SidebarMenuItem>
                   ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarGroup>
+              <SidebarGroupLabel>Extensions</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                     <SidebarMenuItem>
+                       <div className="flex items-center p-2 text-sm">
+                         <Puzzle className="h-4 w-4 mr-2 flex-shrink-0" />
+                         <div className="flex flex-col">
+                             <span className="font-medium">Extension Marketplace</span>
+                         </div>
+                       </div>
+                     </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>

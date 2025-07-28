@@ -31,7 +31,7 @@ export default function LandingPage() {
                   How <span className="text-primary">product</span> & <span className="text-primary">engineering</span> teams work together with AI
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Turn text into working web apps. Our platform handles the code while you focus on your vision, letting you create and launch applications directly from your browser.
+                  Our platform handles the code while you focus on your vision, letting you create and launch applications directly from your IDE or browser.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
