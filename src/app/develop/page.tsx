@@ -24,15 +24,46 @@ import {
 
 type View = "files" | "source-control" | "run";
 
+const loadingMessages = [
+    "Fetching workspace...",
+    "Setting up container...",
+    "Starting services...",
+    "Finalizing setup...",
+];
+
 export default function CodeCanvas() {
   const [isMounted, setIsMounted] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
   const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<View>("files");
   const terminalRef = useRef<TerminalHandle>(null);
 
   useEffect(() => {
-    setIsMounted(true);
+    const messageInterval = setInterval(() => {
+        setLoadingMessage(prev => {
+            const currentIndex = loadingMessages.indexOf(prev);
+            if (currentIndex < loadingMessages.length - 1) {
+                return loadingMessages[currentIndex + 1];
+            }
+            return prev;
+        });
+    }, 1200);
+
+    const mountTimeout = setTimeout(() => {
+      setIsMounted(true);
+      clearInterval(messageInterval);
+    }, loadingMessages.length * 1200 + 500);
+
+    return () => {
+        clearInterval(messageInterval);
+        clearTimeout(mountTimeout);
+    };
+}, []);
+
+
+  useEffect(() => {
+    if (!isMounted) return;
     try {
       const savedOpenFiles = localStorage.getItem("codeCanvas-openFiles");
       const savedActiveFileId = localStorage.getItem("codeCanvas-activeFileId");
@@ -47,7 +78,6 @@ export default function CodeCanvas() {
         if (!isReadmeOpen) {
           initialOpenFiles = [readmeFile, ...initialOpenFiles];
         }
-        // Always make README active on load
         initialActiveFileId = readmeFile.id;
       }
       
@@ -69,7 +99,7 @@ export default function CodeCanvas() {
     } catch (error) {
       console.error("Failed to parse from localStorage", error);
     }
-  }, []);
+  }, [isMounted]);
 
   useEffect(() => {
     if (isMounted) {
@@ -148,12 +178,14 @@ export default function CodeCanvas() {
   if (!isMounted) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-card">
-        <div className="flex items-center space-x-2">
-          <svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span className="text-foreground">Loading...</span>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="flex items-center space-x-2">
+            <svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span className="text-foreground text-lg">{loadingMessage}</span>
+          </div>
         </div>
       </div>
     );
