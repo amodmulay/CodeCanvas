@@ -37,8 +37,19 @@ export default function CodeCanvas() {
       const savedOpenFiles = localStorage.getItem("codeCanvas-openFiles");
       const savedActiveFileId = localStorage.getItem("codeCanvas-activeFileId");
 
-      const initialOpenFiles = savedOpenFiles ? JSON.parse(savedOpenFiles) : [];
-      const initialActiveFileId = savedActiveFileId ? JSON.parse(savedActiveFileId) : null;
+      let initialOpenFiles: FileType[] = savedOpenFiles ? JSON.parse(savedOpenFiles) : [];
+      let initialActiveFileId: string | null = savedActiveFileId ? JSON.parse(savedActiveFileId) : null;
+      
+      const readmeFile = getFileById("readme");
+
+      if (readmeFile) {
+        const isReadmeOpen = initialOpenFiles.some(f => f.id === readmeFile.id);
+        if (!isReadmeOpen) {
+          initialOpenFiles = [readmeFile, ...initialOpenFiles];
+        }
+        // Always make README active on load
+        initialActiveFileId = readmeFile.id;
+      }
       
       if (initialOpenFiles.length > 0) {
         setOpenFiles(initialOpenFiles);
@@ -48,7 +59,6 @@ export default function CodeCanvas() {
           setActiveFileId(initialOpenFiles[0].id);
         }
       } else {
-        const readmeFile = getFileById("readme");
         const telemetryFile = getFileById("telemetry.ts");
         const filesToOpen = [readmeFile, telemetryFile].filter((f): f is FileType => !!f);
         if (filesToOpen.length > 0) {
