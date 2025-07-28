@@ -29,23 +29,24 @@ export function EditorTabs({ openFiles, activeFileId, onCloseFile, onSetActiveFi
     <Tabs value={activeFileId ?? undefined} onValueChange={onSetActiveFile} className="flex flex-col h-full w-full">
       <TabsList className="flex-shrink-0 justify-start rounded-none bg-card p-0 border-b">
         {openFiles.map((file) => (
-          <TabsTrigger
-            key={file.id}
-            value={file.id}
-            className="relative group rounded-none border-r border-t-2 border-transparent bg-card px-4 py-2 text-sm text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:border-t-accent"
-          >
-            {file.name}
+          <div key={file.id} className="relative group flex items-center">
+            <TabsTrigger
+              value={file.id}
+              className="rounded-none border-r border-t-2 border-transparent bg-card pr-10 pl-4 py-2 text-sm text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:border-t-accent"
+            >
+              {file.name}
+            </TabsTrigger>
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onCloseFile(file.id)
               }}
-              className="ml-3 rounded-sm p-0.5 text-muted-foreground opacity-50 hover:bg-muted-foreground/20 hover:opacity-100 group-data-[state=active]:opacity-100"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground opacity-50 hover:bg-muted-foreground/20 hover:opacity-100 group-data-[state=active]:opacity-100"
               aria-label={`Close ${file.name}`}
             >
               <X size={14} />
             </button>
-          </TabsTrigger>
+          </div>
         ))}
       </TabsList>
       
