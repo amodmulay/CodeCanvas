@@ -44,12 +44,12 @@ export default function LandingPage() {
               </div>
             </div>
             <Image
-              src="https://placehold.co/600x400.png"
+              src="https://www.panasonic.aero/hs-fs/hubfs/00PAC%20-%20Panasonic%20Avionics/Home/Astrova-04.jpg?width=1920&height=1080&name=Astrova-04.jpg"
               alt="Hero"
               width={600}
               height={400}
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
-              data-ai-hint="team collaboration"
+              data-ai-hint="inflight entertainment system"
             />
           </div>
         </div>
