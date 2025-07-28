@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -31,7 +32,7 @@ export function EditorTabs({ openFiles, activeFileId, onCloseFile, onSetActiveFi
           <TabsTrigger
             key={file.id}
             value={file.id}
-            className="relative rounded-none border-r border-t-2 border-transparent bg-card px-4 py-2 text-sm text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:border-t-accent"
+            className="relative group rounded-none border-r border-t-2 border-transparent bg-card px-4 py-2 text-sm text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:border-t-accent"
           >
             {file.name}
             <button
@@ -39,7 +40,7 @@ export function EditorTabs({ openFiles, activeFileId, onCloseFile, onSetActiveFi
                 e.stopPropagation()
                 onCloseFile(file.id)
               }}
-              className="ml-3 rounded-sm p-0.5 text-muted-foreground opacity-50 hover:bg-muted-foreground/20 hover:opacity-100"
+              className="ml-3 rounded-sm p-0.5 text-muted-foreground opacity-50 hover:bg-muted-foreground/20 hover:opacity-100 group-data-[state=active]:opacity-100"
               aria-label={`Close ${file.name}`}
             >
               <X size={14} />
