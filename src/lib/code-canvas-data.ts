@@ -79,13 +79,49 @@ In a nutshell, both VS Code and the Theia IDE support VS Code extensions and can
 
 \`\`\`mermaid
 flowchart TD
-    A[Start] --> B{Is it responsive?};
-    B -- Yes --> C[Check accessibility];
-    B -- No --> D[Apply responsive styles];
-    D --> C;
-    C -- Yes --> F[Launch!];
-    C -- No --> E[Improve accessibility];
-    E --> F;
+ subgraph DevEnv["Developer Environment"]
+        IDE1["VS Code / Theia with PAC Features"]
+        IDE2["Web IDE - Cloud-based VS Code"]
+  end
+ subgraph SDK["Panasonic SDK and Plugins"]
+        APIRef["API Reference Plugin"]
+        EmulatorPlugin["Hardware Emulator Plugin"]
+        OTAPlugin["OTA Package Creator"]
+  end
+ subgraph CloudPlatform["Cloud Platform"]
+        GitRepo["Source Code Repo - Git-based"]
+        Builder["Build System - CI/CD Engine"]
+        Emulator["Cloud Hardware Emulator"]
+        ArtifactStore["Artifact Storage"]
+  end
+ subgraph OTA["OTA Deployment Platform"]
+        Signer["Sign Release Package"]
+        OTAQueue["OTA Distribution Queue"]
+  end
+ subgraph FleetMgmt["Aircraft Fleet Management"]
+        Aircraft1["Aircraft #1"]
+        Aircraft2["Aircraft #2"]
+        AircraftN["Aircraft #N"]
+        Monitoring["Monitoring/Logs/Feedback"]
+  end
+  subgraph Dashboarding["Dashboards"]
+  end
+
+    IDE1 -- Uses --> SDK
+    IDE2 -- Uses --> SDK
+    IDE1 -- Push Code --> GitRepo
+    IDE2 -- Push Code --> GitRepo
+    GitRepo --> Builder
+    Builder --> Emulator & ArtifactStore
+    ArtifactStore --> Signer
+    Signer --> OTAQueue
+    OTAQueue --> Aircraft1 & Aircraft2 & AircraftN
+    Aircraft1 --> Monitoring
+    Aircraft2 --> Monitoring
+    AircraftN --> Monitoring
+    Monitoring --> IDE1 & IDE2
+    Monitoring --> Dashboarding
+
 \`\`\`
 `;
 
