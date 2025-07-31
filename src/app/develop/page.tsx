@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -25,6 +25,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 
 type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build";
@@ -265,50 +267,87 @@ export default function CodeCanvas() {
             description: `Version ${version} is being built and signed.`,
         });
     }
+    
+    const recentBuilds = [
+        { version: '0.9.5', target: 'Astrova Seatback', status: 'Success', time: '5m ago' },
+        { version: '0.9.4', target: 'IFE Generation 3', status: 'Failed', time: '2h ago' },
+        { version: '0.9.3', target: 'Cuttlefish Emulator', status: 'Success', time: '1d ago' },
+    ]
 
     return (
-        <div className="p-4 bg-card h-full">
-            <h3 className="text-lg font-semibold mb-4">OTA Package Builder</h3>
-            <div className="space-y-4">
-                 <div>
-                    <Label htmlFor="build-target">
-                        <Package className="h-4 w-4 mr-2 inline-block" />
-                        Build Target
-                    </Label>
-                    <Select defaultValue="astrova-seatback">
-                        <SelectTrigger id="build-target">
-                            <SelectValue placeholder="Select a target" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="astrova-seatback">Astrova Seatback Display</SelectItem>
-                            <SelectItem value="IFE-gen3">IFE Generation 3</SelectItem>
-                            <SelectItem value="cuttlefish-emulator">Cuttlefish Emulator</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div>
-                    <Label htmlFor="commit-hash">
-                        <GitCommit className="h-4 w-4 mr-2 inline-block" />
-                        Commit
-                    </Label>
-                    <Input id="commit-hash" defaultValue="a1b2c3d - feat: initial UI" />
-                </div>
-                 <div>
-                    <Label htmlFor="version">
-                        <Tag className="h-4 w-4 mr-2 inline-block" />
-                        Version
-                    </Label>
-                    <Input id="version" value={version} onChange={(e) => setVersion(e.target.value)} />
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Checkbox id="sign-package" checked={isSigned} onCheckedChange={(checked) => setIsSigned(!!checked)} />
-                    <Label htmlFor="sign-package">Sign Release Package</Label>
-                </div>
-                <Button onClick={handleBuildPackage} className="w-full">
-                    <Send className="h-4 w-4 mr-2" />
-                    Package, Sign & Simulate
-                </Button>
-            </div>
+        <div className="p-4 bg-card h-full space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>OTA Package Builder</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <Label htmlFor="build-target">
+                            <Package className="h-4 w-4 mr-2 inline-block" />
+                            Build Target
+                        </Label>
+                        <Select defaultValue="astrova-seatback">
+                            <SelectTrigger id="build-target">
+                                <SelectValue placeholder="Select a target" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="astrova-seatback">Astrova Seatback Display</SelectItem>
+                                <SelectItem value="IFE-gen3">IFE Generation 3</SelectItem>
+                                <SelectItem value="cuttlefish-emulator">Cuttlefish Emulator</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label htmlFor="commit-hash">
+                            <GitCommit className="h-4 w-4 mr-2 inline-block" />
+                            Commit
+                        </Label>
+                        <Input id="commit-hash" defaultValue="a1b2c3d - feat: initial UI" />
+                    </div>
+                    <div>
+                        <Label htmlFor="version">
+                            <Tag className="h-4 w-4 mr-2 inline-block" />
+                            Version
+                        </Label>
+                        <Input id="version" value={version} onChange={(e) => setVersion(e.target.value)} />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="sign-package" checked={isSigned} onCheckedChange={(checked) => setIsSigned(!!checked)} />
+                        <Label htmlFor="sign-package">Sign Release Package</Label>
+                    </div>
+                    <Button onClick={handleBuildPackage} className="w-full">
+                        <Send className="h-4 w-4 mr-2" />
+                        Package, Sign & Simulate
+                    </Button>
+                </CardContent>
+            </Card>
+
+            <Separator />
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle>Recent Builds</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ul className="space-y-4">
+                        {recentBuilds.map((build, index) => (
+                            <li key={index} className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    {build.status === 'Success' ? <CheckCircle className="h-5 w-5 mr-3 text-green-500" /> : <XCircle className="h-5 w-5 mr-3 text-red-500" />}
+                                    <div>
+                                        <p className="font-medium">v{build.version} - {build.target}</p>
+                                        <p className="text-sm text-muted-foreground">{build.status}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center text-sm text-muted-foreground">
+                                    <Clock className="h-4 w-4 mr-1" />
+                                    {build.time}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
         </div>
     )
 }
@@ -469,6 +508,8 @@ export default function CodeCanvas() {
       </div>
   );
 }
+
+    
 
     
 
