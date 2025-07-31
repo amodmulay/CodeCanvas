@@ -3,26 +3,28 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
-import { type File as FileType, getFileById, fileSystem } from "@/lib/code-canvas-data";
+import { type File as FileType, getFileById, fileSystem, apiDocs } from "@/lib/code-canvas-data";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { SourceControlPanel } from "@/components/code-canvas/source-control-panel";
-import { IdeSidebar } from "@/components/code-canvas/ide-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import {
   Menubar,
-  MenubarContent,
-  MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
-type View = "files" | "source-control" | "run";
+type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions";
+
+const containers = [
+    { name: 'prod-app-server-1', type: 'Graviton', region: 'us-east-1' },
+    { name: 'prod-app-server-2', type: 'Graviton', region: 'us-east-1' },
+    { name: 'cuttlefish-emulator-1', type: 'Cuttlefish', region: 'us-west-2' },
+    { name: 'cuttlefish-emulator-2', type: 'Cuttlefish', region: 'us-west-2' },
+    { name: 'staging-db-master', type: 'Graviton', region: 'eu-west-1' },
+];
 
 const loadingMessages = [
     "Fetching workspace...",
@@ -78,7 +80,9 @@ export default function CodeCanvas() {
         if (!isReadmeOpen) {
           initialOpenFiles = [readmeFile, ...initialOpenFiles];
         }
-        initialActiveFileId = readmeFile.id;
+        if (!initialActiveFileId) {
+          initialActiveFileId = readmeFile.id;
+        }
       }
       
       if (initialOpenFiles.length > 0) {
@@ -165,6 +169,28 @@ export default function CodeCanvas() {
       >
         <Play size={24} />
       </button>
+       <button 
+        onClick={() => setActiveView("api-docs")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'api-docs' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="API Documentation"
+      >
+        <BookMarked size={24} />
+      </button>
+      <button 
+        onClick={() => setActiveView("containers")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'containers' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Running Containers"
+      >
+        <Cpu size={24} />
+      </button>
+      <button 
+        onClick={() => setActiveView("extensions")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'extensions' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Extensions"
+      >
+        <Puzzle size={24} />
+      </button>
+      <div className="flex-grow" />
       <button 
         className="p-2 mt-4 rounded-md text-muted-foreground"
         title="Debug"
@@ -174,6 +200,53 @@ export default function CodeCanvas() {
       </button>
     </div>
   );
+
+  const ApiDocsPanel = () => (
+      <div className="p-4 bg-card h-full">
+          <h3 className="text-lg font-semibold mb-2">API Documentation</h3>
+          <ul className="space-y-2">
+              {apiDocs.map((doc) => (
+                  <li key={doc.id}>
+                      <button onClick={() => handleOpenFile(doc)} className="flex items-center text-sm p-1 rounded-md hover:bg-muted w-full text-left">
+                          <BookMarked className="h-4 w-4 mr-2 flex-shrink-0" />
+                          {doc.name}
+                      </button>
+                  </li>
+              ))}
+          </ul>
+      </div>
+  )
+
+  const ContainersPanel = () => (
+      <div className="p-4 bg-card h-full">
+          <h3 className="text-lg font-semibold mb-2">Running Containers (AWS)</h3>
+          <ul className="space-y-2">
+            {containers.map((container, index) => (
+                <li key={index}>
+                    <div className="flex items-center p-2 text-sm">
+                        {container.type === 'Graviton' ? <Cpu className="h-4 w-4 mr-2 flex-shrink-0 text-green-400" /> : <File className="h-4 w-4 mr-2 flex-shrink-0 text-purple-400" />}
+                        <div className="flex flex-col">
+                            <span className="font-medium">{container.name}</span>
+                            <span className="text-xs text-muted-foreground">{container.region} - {container.type}</span>
+                        </div>
+                    </div>
+                </li>
+            ))}
+          </ul>
+      </div>
+  )
+
+  const ExtensionsPanel = () => (
+      <div className="p-4 bg-card h-full">
+          <h3 className="text-lg font-semibold mb-2">Extensions</h3>
+          <div className="flex items-center p-2 text-sm">
+            <Puzzle className="h-4 w-4 mr-2 flex-shrink-0" />
+            <div className="flex flex-col">
+                <span className="font-medium">Extension Marketplace</span>
+            </div>
+          </div>
+      </div>
+  )
   
   if (!isMounted) {
     return (
@@ -192,7 +265,6 @@ export default function CodeCanvas() {
   }
 
   return (
-    <SidebarProvider>
       <div className="h-screen w-full bg-background text-foreground font-body flex flex-col">
         <Menubar className="rounded-none border-b border-border px-2">
           <MenubarMenu>
@@ -221,13 +293,15 @@ export default function CodeCanvas() {
           </MenubarMenu>
         </Menubar>
         <div className="flex flex-grow">
-          <IdeSidebar onFileClick={handleOpenFile} />
           <ActivityBar />
           <ResizablePanelGroup direction="horizontal" className="h-full w-full">
             <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
               {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
               {activeView === 'source-control' && <SourceControlPanel />}
               {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
+              {activeView === 'api-docs' && <ApiDocsPanel />}
+              {activeView === 'containers' && <ContainersPanel />}
+              {activeView === 'extensions' && <ExtensionsPanel />}
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={82}>
@@ -249,6 +323,5 @@ export default function CodeCanvas() {
           </ResizablePanelGroup>
         </div>
       </div>
-    </SidebarProvider>
   );
 }
