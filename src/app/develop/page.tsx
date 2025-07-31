@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 
 type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build" | "testing";
@@ -454,6 +455,111 @@ export default function CodeCanvas() {
         </div>
     )
 }
+const RunAndDebugPanel = () => {
+    const [isDebugging, setIsDebugging] = useState(false);
+
+    const handleToggleDebug = () => {
+        setIsDebugging(!isDebugging);
+        toast({
+            title: isDebugging ? "Debugger Detached" : "Debugger Attached",
+            description: isDebugging ? "Stopped debugging process." : "Attached to process. Ready to debug.",
+        });
+    }
+
+    const variables = {
+        Local: [
+            { name: 'props', value: '{...}', type: 'object' },
+            { name: 'state', value: '{...}', type: 'object' },
+            { name: 'id', value: '"readme"', type: 'string' },
+        ],
+        Global: [
+            { name: 'window', value: 'Window', type: 'object' },
+            { name: 'document', value: 'Document', type: 'object' },
+        ]
+    };
+
+    const callStack = [
+        { func: 'handleOpenFile', file: 'page.tsx:150', status: 'active' },
+        { func: 'onClick', file: 'file-explorer.tsx:45', status: 'paused' },
+        { func: 'Node', file: 'file-explorer.tsx:30', status: 'paused' },
+    ];
+
+    const breakpoints = [
+        { file: 'page.tsx', line: 152 },
+        { file: 'editor-tabs.tsx', line: 40 },
+    ];
+
+    return (
+        <div className="p-4 bg-card h-full flex flex-col space-y-4">
+            <div className="flex items-center space-x-2">
+                <Button onClick={handleToggleDebug} size="sm" className="flex-grow">
+                    {isDebugging ? <StopCircle className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
+                    {isDebugging ? 'Stop Debugging' : 'Run and Debug'}
+                </Button>
+                <Select defaultValue="launch-program">
+                    <SelectTrigger className="w-[180px] text-xs">
+                        <SelectValue placeholder="Select a configuration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="launch-program">Launch Program</SelectItem>
+                        <SelectItem value="attach-process">Attach to Process</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <Accordion type="multiple" defaultValue={['variables', 'call-stack', 'breakpoints']} className="w-full">
+                <AccordionItem value="variables">
+                    <AccordionTrigger className="text-sm font-medium">Variables</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="pl-2 space-y-2">
+                            <p className="text-xs font-semibold">Local</p>
+                            <ul className="pl-2 font-mono text-xs space-y-1">
+                                {variables.Local.map(v => <li key={v.name}><span className="text-red-400">{v.name}</span>: <span className="text-blue-400">{v.value}</span></li>)}
+                            </ul>
+                            <p className="text-xs font-semibold pt-2">Global</p>
+                             <ul className="pl-2 font-mono text-xs space-y-1">
+                                {variables.Global.map(v => <li key={v.name}><span className="text-red-400">{v.name}</span>: <span className="text-blue-400">{v.value}</span></li>)}
+                            </ul>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="watch">
+                    <AccordionTrigger className="text-sm font-medium">Watch</AccordionTrigger>
+                    <AccordionContent>
+                        <p className="text-xs text-muted-foreground pl-2">No watch expressions.</p>
+                    </AccordionContent>
+                </AccordionItem>
+                 <AccordionItem value="call-stack">
+                    <AccordionTrigger className="text-sm font-medium">Call Stack</AccordionTrigger>
+                    <AccordionContent>
+                         <ul className="pl-2 space-y-1">
+                            {callStack.map((c, i) => (
+                                <li key={i} className={`text-xs ${c.status === 'active' ? 'font-bold' : ''}`}>
+                                    <p>{c.func}</p>
+                                    <p className="text-muted-foreground">{c.file}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    </AccordionContent>
+                </AccordionItem>
+                 <AccordionItem value="breakpoints">
+                    <AccordionTrigger className="text-sm font-medium">Breakpoints</AccordionTrigger>
+                    <AccordionContent>
+                        <ul className="pl-2 space-y-2">
+                          {breakpoints.map((b, i) => (
+                              <li key={i} className="flex items-center text-xs space-x-2">
+                                  <Checkbox defaultChecked />
+                                  <span className="text-red-500">•</span>
+                                  <span>{b.file}:{b.line}</span>
+                              </li>
+                          ))}
+                        </ul>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
+        </div>
+    )
+}
 
   const ExtensionsPanel = () => (
       <div className="p-4 bg-card h-full">
@@ -579,7 +685,7 @@ export default function CodeCanvas() {
             <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
               {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
               {activeView === 'source-control' && <SourceControlPanel />}
-              {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
+              {activeView === 'run' && <RunAndDebugPanel />}
               {activeView === 'build' && <OtaPackageBuilderPanel />}
               {activeView === 'testing' && <TestingPanel />}
               {activeView === 'api-docs' && <ApiDocsPanel />}
@@ -612,3 +718,4 @@ export default function CodeCanvas() {
       </div>
   );
 }
+
