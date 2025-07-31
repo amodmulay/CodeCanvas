@@ -1,7 +1,7 @@
 
 ## Project Structure
 
-This project, Panasonic Avionics, is structured as a Next.js application with TypeScript and Tailwind CSS. The core components are organized within the `src` directory.
+This project, Avionics, is structured as a Next.js application with TypeScript and Tailwind CSS. The core components are organized within the `src` directory.
 
 - **`.idx`**: Contains development-related files, including the Nix environment configuration (`dev.nix`) and an icon (`icon.png`).
 - **`docs`**: Contains project documentation, including the `blueprint.md` file which details the application's core features and style guidelines.
