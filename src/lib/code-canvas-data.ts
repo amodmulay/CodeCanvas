@@ -292,7 +292,7 @@ For more details, refer to the official Android for Cars App Library documentati
 
 export const apiDocs: File[] = [
     { id: 'android-api-doc', name: 'Android API', content: androidAutoApiContent, type: 'file' },
-    { id: 'golang-doc', name: 'Golang Documentation', content: 'Extensive documentation for the Go programming language...', type: 'file' },
+    { id: 'golang-doc', name: 'Converix API Reference', content: 'Extensive documentation for Converix API.', type: 'file' },
     { id: 'typescript-doc', name: 'TypeScript Documentation', content: 'Detailed documentation for TypeScript...', type: 'file' },
 ];
 

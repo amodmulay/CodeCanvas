@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -18,14 +18,21 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarSeparator,
-} from "@/components/ui/menubar"
+} from "@/components/ui/menubar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 
-type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions";
+
+type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build";
 
 const containers = [
-    { name: 'prod-app-server-1', type: 'Graviton', region: 'us-east-1' },
-    { name: 'prod-app-server-2', type: 'Graviton', region: 'us-east-1' },
-    { name: 'cuttlefish-emulator-1', type: 'Cuttlefish', region: 'us-west-2' },
+    { name: 'prod-app-converix-1', type: 'Graviton', region: 'us-east-1' },
+    { name: 'prod-app-converix-2', type: 'Graviton', region: 'us-east-1' },
+    { name: 'converix-sandbox', type: 'Cuttlefish', region: 'us-west-2' },
     { name: 'cuttlefish-emulator-2', type: 'Cuttlefish', region: 'us-west-2' },
     { name: 'staging-db-master', type: 'Graviton', region: 'eu-west-1' },
 ];
@@ -44,6 +51,7 @@ export default function CodeCanvas() {
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<View>("files");
   const terminalRef = useRef<TerminalHandle>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const messageInterval = setInterval(() => {
@@ -166,6 +174,13 @@ export default function CodeCanvas() {
       >
         <GitMerge size={24} />
       </button>
+       <button 
+        onClick={() => setActiveView("build")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'build' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Build"
+      >
+        <Archive size={24} />
+      </button>
       <button 
         onClick={handleRun}
         className={`p-2 mt-4 rounded-md ${activeView === 'run' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
@@ -239,6 +254,64 @@ export default function CodeCanvas() {
           </ul>
       </div>
   )
+  
+  const OtaPackageBuilderPanel = () => {
+    const [version, setVersion] = useState("1.0.0");
+    const [isSigned, setIsSigned] = useState(true);
+
+    const handleBuildPackage = () => {
+        toast({
+            title: "Package Build Queued",
+            description: `Version ${version} is being built and signed.`,
+        });
+    }
+
+    return (
+        <div className="p-4 bg-card h-full">
+            <h3 className="text-lg font-semibold mb-4">OTA Package Builder</h3>
+            <div className="space-y-4">
+                 <div>
+                    <Label htmlFor="build-target">
+                        <Package className="h-4 w-4 mr-2 inline-block" />
+                        Build Target
+                    </Label>
+                    <Select defaultValue="astrova-seatback">
+                        <SelectTrigger id="build-target">
+                            <SelectValue placeholder="Select a target" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="astrova-seatback">Astrova Seatback Display</SelectItem>
+                            <SelectItem value="IFE-gen3">IFE Generation 3</SelectItem>
+                            <SelectItem value="cuttlefish-emulator">Cuttlefish Emulator</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                 <div>
+                    <Label htmlFor="commit-hash">
+                        <GitCommit className="h-4 w-4 mr-2 inline-block" />
+                        Commit
+                    </Label>
+                    <Input id="commit-hash" defaultValue="a1b2c3d - feat: initial UI" />
+                </div>
+                 <div>
+                    <Label htmlFor="version">
+                        <Tag className="h-4 w-4 mr-2 inline-block" />
+                        Version
+                    </Label>
+                    <Input id="version" value={version} onChange={(e) => setVersion(e.target.value)} />
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Checkbox id="sign-package" checked={isSigned} onCheckedChange={(checked) => setIsSigned(!!checked)} />
+                    <Label htmlFor="sign-package">Sign Release Package</Label>
+                </div>
+                <Button onClick={handleBuildPackage} className="w-full">
+                    <Send className="h-4 w-4 mr-2" />
+                    Package, Sign & Simulate
+                </Button>
+            </div>
+        </div>
+    )
+}
 
   const ExtensionsPanel = () => (
       <div className="p-4 bg-card h-full">
@@ -365,6 +438,7 @@ export default function CodeCanvas() {
               {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
               {activeView === 'source-control' && <SourceControlPanel />}
               {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
+              {activeView === 'build' && <OtaPackageBuilderPanel />}
               {activeView === 'api-docs' && <ApiDocsPanel />}
               {activeView === 'containers' && <ContainersPanel />}
               {activeView === 'extensions' && <ExtensionsPanel />}
@@ -395,5 +469,7 @@ export default function CodeCanvas() {
       </div>
   );
 }
+
+    
 
     
