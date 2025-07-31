@@ -67,58 +67,60 @@ flowchart TD
 const techArchContent = `
 \`\`\`mermaid
 graph TD
+    subgraph "Optional Desktop Client"
+        direction LR
+        D1["VS Code Desktop with<br/>Panasonic Extension Pack"]
+        D2["Secure Remote Build Tools"]
+    end
 
-  subgraph Frontend [Client]
-    A1[Custom Web IDE - Theia/WebContainer-based]
-    A2[Panasonic UI Theme + Branding]
-    A3[IDE Plugins: Emulator, API Docs, OTA Packager, LLM Assistant]
-    A4[Terminal, File Browser, Editor]
-  end
+    subgraph "Client"
+        direction TB
+        A0["Custom Web IDE -<br/>Theia/WebContainer-based"]
+        A1["Terminal, File Browser, Editor"]
+        A2["Panasonic UI Theme +<br/>Branding"]
+        A3["IDE Plugins: Emulator, API<br/>Docs, OTA Packager, LLM<br/>Assistant"]
+    end
+    
+    A0 --> A1
+    A0 --> A2
+    A0 --> A3
 
-  subgraph Runtime Container Layer
-    B1[WebContainer - Node + Filesystem in Browser]
-    B2[Browser FS + VFS]
-    B3[In-Browser Package Manager]
-  end
+    subgraph "Runtime Container Layer"
+        direction TB
+        B1["WebContainer - Node +<br/>Filesystem in Browser"]
+        B2["Browser FS + VFS"]
+        B3["In-Browser Package Manager"]
+    end
+    
+    A1 --> B1
+    B1 --> B2
+    B1 --> B3
 
-  subgraph Cloud Platform
-    C1[Auth Gateway - SSO / OAuth2]
-    C2[API Gateway]
-    C3[CI/CD Pipeline]
-    C4[Cloud Emulator - K8s Pods per session]
-    C5[Artifact Store - Release Packages]
-    C6[Code Signing Service]
-    C7[OTA Integration API]
-    C8[Logging + Monitoring Service]
-    C9[Developer DB + Tenant Workspace]
-  end
+    subgraph "Cloud Platform"
+        direction TB
+        C1["Auth Gateway - SSO / OAuth2"]
+        C2["API Gateway"]
+        C3["CI/CD Pipeline"]
+        C4["Cloud Emulator - K8s Pods per<br/>session"]
+        C5["Artifact Store - Release<br/>Packages"]
+        C6["Code Signing Service"]
+        C7["OTA Integration API"]
+        C8["Logging + Monitoring Service"]
+        C9["Developer DB + Tenant<br/>Workspace"]
+    end
 
-  subgraph Optional Desktop Client
-    D1[VS Code Desktop with Panasonic Extension Pack]
-    D2[Secure Remote Build Tools]
-  end
-
-  A1 --> A4
-  A1 --> A2
-  A1 --> A3
-  A3 --> B1
-  A4 --> B1
-  B1 --> B2
-  B1 --> B3
-
-  A1 -->|Auth| C1
-  A1 -->|Fetch APIs, Docs| C2
-  A1 -->|Push Code| C3
-  A1 -->|Test & Debug| C4
-  A1 -->|Release Package| C5
-  A1 -->|Sign Release| C6
-  A1 -->|Trigger OTA| C7
-  A1 -->|Logs, Feedback| C8
-  A1 -->|Workspace Meta| C9
-
-  D1 -->|Push/Sync| C3
-  D1 -->|Access Plugins| C2
-
+    A0 -- "Auth" --> C1
+    A0 -- "Fetch APIs, Docs" --> C2
+    A0 -- "Push Code" --> C3
+    A0 -- "Test & Debug" --> C4
+    A0 -- "Release Package" --> C5
+    A0 -- "Sign Release" --> C6
+    A0 -- "Trigger OTA" --> C7
+    A0 -- "Logs, Feedback" --> C8
+    A0 -- "Workspace Meta" --> C9
+    
+    D1 -- "Access Plugins" --> C2
+    D1 -- "Push/Sync" --> C3
 \`\`\`
 `;
 
