@@ -86,7 +86,7 @@ body {
       height: 100%;
   }
   body {
-    @apply bg-background text-foreground h-screen overflow-hidden;
+    @apply bg-background text-foreground;
   }
 }
 
