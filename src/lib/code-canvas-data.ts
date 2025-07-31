@@ -43,7 +43,7 @@ flowchart TD
         AircraftN["Aircraft #N"]
         Monitoring["Monitoring/Logs/Feedback"]
   end
-  subgraph Dashboarding["Dashboards"]
+ subgraph Dashboarding["Dashboards"]
   end
 
     IDE1 -- Uses --> SDK
@@ -68,25 +68,25 @@ const techArchContent = `
 \`\`\`mermaid
 graph TD
 
-  subgraph Frontend (Client)
-    A1[Custom Web IDE (Theia/WebContainer-based)]
+  subgraph Frontend [Client]
+    A1[Custom Web IDE - Theia/WebContainer-based]
     A2[Panasonic UI Theme + Branding]
     A3[IDE Plugins: Emulator, API Docs, OTA Packager, LLM Assistant]
     A4[Terminal, File Browser, Editor]
   end
 
   subgraph Runtime Container Layer
-    B1[WebContainer (Node + Filesystem in Browser)]
+    B1[WebContainer - Node + Filesystem in Browser]
     B2[Browser FS + VFS]
     B3[In-Browser Package Manager]
   end
 
   subgraph Cloud Platform
-    C1[Auth Gateway (SSO / OAuth2)]
+    C1[Auth Gateway - SSO / OAuth2]
     C2[API Gateway]
     C3[CI/CD Pipeline]
-    C4[Cloud Emulator (K8s Pods per session)]
-    C5[Artifact Store (Release Packages)]
+    C4[Cloud Emulator - K8s Pods per session]
+    C5[Artifact Store - Release Packages]
     C6[Code Signing Service]
     C7[OTA Integration API]
     C8[Logging + Monitoring Service]
