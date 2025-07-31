@@ -64,6 +64,64 @@ flowchart TD
 \`\`\`
 `;
 
+const techArchContent = `
+\`\`\`mermaid
+graph TD
+
+  subgraph Frontend (Client)
+    A1[Custom Web IDE (Theia/WebContainer-based)]
+    A2[Panasonic UI Theme + Branding]
+    A3[IDE Plugins: Emulator, API Docs, OTA Packager, LLM Assistant]
+    A4[Terminal, File Browser, Editor]
+  end
+
+  subgraph Runtime Container Layer
+    B1[WebContainer (Node + Filesystem in Browser)]
+    B2[Browser FS + VFS]
+    B3[In-Browser Package Manager]
+  end
+
+  subgraph Cloud Platform
+    C1[Auth Gateway (SSO / OAuth2)]
+    C2[API Gateway]
+    C3[CI/CD Pipeline]
+    C4[Cloud Emulator (K8s Pods per session)]
+    C5[Artifact Store (Release Packages)]
+    C6[Code Signing Service]
+    C7[OTA Integration API]
+    C8[Logging + Monitoring Service]
+    C9[Developer DB + Tenant Workspace]
+  end
+
+  subgraph Optional Desktop Client
+    D1[VS Code Desktop with Panasonic Extension Pack]
+    D2[Secure Remote Build Tools]
+  end
+
+  A1 --> A4
+  A1 --> A2
+  A1 --> A3
+  A3 --> B1
+  A4 --> B1
+  B1 --> B2
+  B1 --> B3
+
+  A1 -->|Auth| C1
+  A1 -->|Fetch APIs, Docs| C2
+  A1 -->|Push Code| C3
+  A1 -->|Test & Debug| C4
+  A1 -->|Release Package| C5
+  A1 -->|Sign Release| C6
+  A1 -->|Trigger OTA| C7
+  A1 -->|Logs, Feedback| C8
+  A1 -->|Workspace Meta| C9
+
+  D1 -->|Push/Sync| C3
+  D1 -->|Access Plugins| C2
+
+\`\`\`
+`;
+
 const pageTsxContent = `
 "use client";
 
@@ -392,6 +450,7 @@ export const fileSystem: FileSystemNode[] = [
   { id: 'next.config.js', name: 'next.config.js', type: 'file', content: '/** @type {import(\'next\').NextConfig} */\nconst nextConfig = {};\nmodule.exports = nextConfig;' },
   { id: 'package.json', name: 'package.json', type: 'file', content: packageJsonContent },
   { id: 'readme', name: 'README.md', type: 'file', content: readmeContent },
+  { id: 'tech-architecture', name: 'tech-architecture.md', type: 'file', content: techArchContent },
   { id: 'tsconfig.json', name: 'tsconfig.json', type: 'file', content: '{ "compilerOptions": { ... } }' },
 ];
 
@@ -407,8 +466,10 @@ const flattenNodes = (nodes: FileSystemNode[]): File[] => {
   return files;
 };
 
-const allFiles = [...flattenNodes(fileSystem), ...apiDocs];
+const allFiles = flattenNodes(fileSystem);
 
 export const getFileById = (id: string): File | undefined => {
-    return allFiles.find(file => file.id === id);
+    // Manually add apiDocs to search since they are not in the main file system tree
+    const allSearchableFiles = [...allFiles, ...apiDocs];
+    return allSearchableFiles.find(file => file.id === id);
 }
