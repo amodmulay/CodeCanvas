@@ -82,8 +82,11 @@ body {
   * {
     @apply border-border;
   }
+  html, body, #__next {
+      height: 100%;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground h-screen overflow-hidden;
   }
 }
 
