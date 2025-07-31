@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -25,11 +25,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 
 
-type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build";
+type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build" | "testing";
 
 const containers = [
     { name: 'prod-app-converix-1', type: 'Graviton', region: 'us-east-1' },
@@ -182,6 +183,13 @@ export default function CodeCanvas() {
         title="Build"
       >
         <Archive size={24} />
+      </button>
+       <button 
+        onClick={() => setActiveView("testing")}
+        className={`p-2 mt-4 rounded-md ${activeView === 'testing' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+        title="Automated Testing"
+      >
+        <TestTubeDiagonal size={24} />
       </button>
       <button 
         onClick={handleRun}
@@ -352,6 +360,101 @@ export default function CodeCanvas() {
     )
 }
 
+    const TestingPanel = () => {
+    const [isTesting, setIsTesting] = useState(false);
+    const [progress, setProgress] = useState(0);
+
+    const handleRunTests = () => {
+        setIsTesting(true);
+        setProgress(0);
+        
+        const interval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    setIsTesting(false);
+                     toast({
+                        title: "Testing Complete",
+                        description: "All tests passed successfully.",
+                    });
+                    return 100;
+                }
+                return prev + 10;
+            });
+        }, 500);
+    }
+    
+    const testRuns = [
+        { id: 'run-1', type: 'E2E Suite', status: 'Success', duration: '5m 12s', time: '1h ago' },
+        { id: 'run-2', type: 'Performance', status: 'Success', duration: '2m 34s', time: '3h ago' },
+        { id: 'run-3', type: 'Regression', status: 'Failed', duration: '7m 45s', time: '1d ago' },
+    ]
+
+    return (
+        <div className="p-4 bg-card h-full space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Automated Testing Harness</CardTitle>
+                    <CardDescription>Run tests in a sandboxed environment.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="test-suite">Test Suite</Label>
+                        <Select defaultValue="all">
+                            <SelectTrigger id="test-suite">
+                                <SelectValue placeholder="Select a suite" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Run All Suites</SelectItem>
+                                <SelectItem value="e2e">End-to-End Tests</SelectItem>
+                                <SelectItem value="performance">Performance Tests</SelectItem>
+                                <SelectItem value="regression">Regression Tests</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button onClick={handleRunTests} className="w-full" disabled={isTesting}>
+                        {isTesting ? (
+                           <>
+                             <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                             Running Tests...
+                           </>
+                        ) : "Run Tests"}
+                       
+                    </Button>
+                    {isTesting && <Progress value={progress} className="w-full mt-2" />}
+                </CardContent>
+            </Card>
+
+            <Separator />
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle>Recent Test Runs</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ul className="space-y-4">
+                        {testRuns.map((run) => (
+                            <li key={run.id} className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    {run.status === 'Success' ? <CheckCircle className="h-5 w-5 mr-3 text-green-500" /> : <XCircle className="h-5 w-5 mr-3 text-red-500" />}
+                                    <div>
+                                        <p className="font-medium">{run.type}</p>
+                                        <p className="text-sm text-muted-foreground">{run.status} - {run.duration}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center text-sm text-muted-foreground">
+                                    <Clock className="h-4 w-4 mr-1" />
+                                    {run.time}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+
   const ExtensionsPanel = () => (
       <div className="p-4 bg-card h-full">
           <h3 className="text-lg font-semibold mb-2">Extensions</h3>
@@ -478,6 +581,7 @@ export default function CodeCanvas() {
               {activeView === 'source-control' && <SourceControlPanel />}
               {activeView === 'run' && <div className="p-4 bg-card h-full"><h3 className="text-lg font-semibold">Run and Debug</h3><p className="text-sm text-muted-foreground">Click the play button to run.</p></div>}
               {activeView === 'build' && <OtaPackageBuilderPanel />}
+              {activeView === 'testing' && <TestingPanel />}
               {activeView === 'api-docs' && <ApiDocsPanel />}
               {activeView === 'containers' && <ContainersPanel />}
               {activeView === 'extensions' && <ExtensionsPanel />}
@@ -508,9 +612,3 @@ export default function CodeCanvas() {
       </div>
   );
 }
-
-    
-
-    
-
-    
