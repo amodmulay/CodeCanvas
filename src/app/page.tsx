@@ -37,7 +37,7 @@ export default function LandingPage() {
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link href="/develop">
                   <Button size="lg" className="w-full min-[400px]:w-auto">
-                    Start Developing
+                    Initialise Development Environment
                     <Code className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
