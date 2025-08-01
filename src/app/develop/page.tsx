@@ -3,7 +3,9 @@
 
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight, User, LogOut, Moon, Sun } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -19,6 +21,15 @@ import {
   MenubarItem,
   MenubarSeparator,
 } from "@/components/ui/menubar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,6 +58,47 @@ const loadingMessages = [
     "Starting services...",
     "Finalizing setup...",
 ];
+
+const UserProfile = () => {
+    const router = useRouter();
+    const { setTheme } = useTheme();
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button className="focus:outline-none rounded-full">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src="https://placehold.co/40x40.png" alt="Developer" data-ai-hint="developer avatar" />
+                        <AvatarFallback>
+                            <User size={20} />
+                        </AvatarFallback>
+                    </Avatar>
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                    <p>Jane Doe</p>
+                    <p className="text-xs text-muted-foreground font-normal">jane.doe@example.com</p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                    <Sun className="mr-2 h-4 w-4" />
+                    <span>Light Theme</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                    <Moon className="mr-2 h-4 w-4" />
+                    <span>Dark Theme</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push('/login')}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
 
 export default function CodeCanvas() {
   const [isMounted, setIsMounted] = useState(false);
@@ -591,95 +643,100 @@ const RunAndDebugPanel = () => {
 
   return (
       <div className="h-screen w-full bg-background text-foreground font-body flex flex-col">
-        <Menubar className="rounded-none border-b border-border px-2">
-          <MenubarMenu>
-            <MenubarTrigger>File</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>New File</MenubarItem>
-              <MenubarItem>Open File</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Save</MenubarItem>
-              <MenubarItem>Save As...</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Close File</MenubarItem>
-              <MenubarItem>Close All Files</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Exit</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>View</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Explorer</MenubarItem>
-              <MenubarItem>Source Control</MenubarItem>
-              <MenubarItem>Run and Debug</MenubarItem>
-              <MenubarItem>API Documentation</MenubarItem>
-              <MenubarItem>Running Containers</MenubarItem>
-              <MenubarItem>Extensions</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Terminal</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Extensions</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Browse Extensions</MenubarItem>
-              <MenubarItem>Installed Extensions</MenubarItem>
-              <MenubarItem>Check for Updates</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Options</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Settings</MenubarItem>
-              <MenubarItem>Keyboard Shortcuts</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Color Theme</MenubarItem>
-              <MenubarItem>File Icon Theme</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Terminal</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>New Terminal</MenubarItem>
-              <MenubarItem>Split Terminal</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Run Task</MenubarItem>
-              <MenubarItem>Run Build Task</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Run</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Start Debugging</MenubarItem>
-              <MenubarItem>Run Without Debugging</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Stop Debugging</MenubarItem>
-              <MenubarItem>Restart Debugging</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Go</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Go to File...</MenubarItem>
-              <MenubarItem>Go to Symbol in Workspace...</MenubarItem>
-              <MenubarItem>Go to Definition</MenubarItem>
-              <MenubarItem>Go to Declaration</MenubarItem>
-              <MenubarItem>Go to Type Definition</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>Help</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Welcome</MenubarItem>
-              <MenubarItem>About</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>View Logs</MenubarItem>
-              <MenubarItem>Report Issue</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
-        <div className="flex flex-grow">
+          <div className="flex items-center justify-between border-b border-border px-2 h-[41px]">
+              <Menubar className="rounded-none border-b-0 px-2 h-auto">
+                  <MenubarMenu>
+                      <MenubarTrigger>File</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>New File</MenubarItem>
+                          <MenubarItem>Open File</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Save</MenubarItem>
+                          <MenubarItem>Save As...</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Close File</MenubarItem>
+                          <MenubarItem>Close All Files</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Exit</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>View</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Explorer</MenubarItem>
+                          <MenubarItem>Source Control</MenubarItem>
+                          <MenubarItem>Run and Debug</MenubarItem>
+                          <MenubarItem>API Documentation</MenubarItem>
+                          <MenubarItem>Running Containers</MenubarItem>
+                          <MenubarItem>Extensions</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Terminal</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Extensions</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Browse Extensions</MenubarItem>
+                          <MenubarItem>Installed Extensions</MenubarItem>
+                          <MenubarItem>Check for Updates</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Options</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Settings</MenubarItem>
+                          <MenubarItem>Keyboard Shortcuts</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Color Theme</MenubarItem>
+                          <MenubarItem>File Icon Theme</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Terminal</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>New Terminal</MenubarItem>
+                          <MenubarItem>Split Terminal</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Run Task</MenubarItem>
+                          <MenubarItem>Run Build Task</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Run</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Start Debugging</MenubarItem>
+                          <MenubarItem>Run Without Debugging</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>Stop Debugging</MenubarItem>
+                          <MenubarItem>Restart Debugging</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Go</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Go to File...</MenubarItem>
+                          <MenubarItem>Go to Symbol in Workspace...</MenubarItem>
+                          <MenubarItem>Go to Definition</MenubarItem>
+                          <MenubarItem>Go to Declaration</MenubarItem>
+                          <MenubarItem>Go to Type Definition</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                      <MenubarTrigger>Help</MenubarTrigger>
+                      <MenubarContent>
+                          <MenubarItem>Welcome</MenubarItem>
+                          <MenubarItem>About</MenubarItem>
+                          <MenubarSeparator />
+                          <MenubarItem>View Logs</MenubarItem>
+                          <MenubarItem>Report Issue</MenubarItem>
+                      </MenubarContent>
+                  </MenubarMenu>
+              </Menubar>
+              <div className="pr-4">
+                <UserProfile />
+              </div>
+          </div>
+        <div className="flex flex-grow overflow-hidden">
           <ActivityBar />
           <ResizablePanelGroup direction="horizontal" className="h-full w-full">
             <ResizablePanel defaultSize={18} minSize={15} maxSize={30}>
@@ -719,3 +776,5 @@ const RunAndDebugPanel = () => {
   );
 }
 
+
+    
