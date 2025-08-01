@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground h-screen overflow-auto">
+    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-auto">
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <Plane className="h-6 w-6 text-primary" />
@@ -35,7 +35,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Link href="/develop">
+                <Link href="/login">
                   <Button size="lg" className="w-full min-[400px]:w-auto">
                     Initialise Development Environment
                     <Code className="ml-2 h-4 w-4" />
