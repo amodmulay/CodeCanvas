@@ -68,7 +68,7 @@ const UserProfile = () => {
             <DropdownMenuTrigger asChild>
                 <button className="focus:outline-none rounded-full">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src="https://placehold.co/40x40.png" alt="Developer" data-ai-hint="developer avatar" />
+                        <AvatarImage src="https://api.dicebear.com/8.x/pixel-art/svg?seed=Jane" alt="Developer" data-ai-hint="pixel art avatar" />
                         <AvatarFallback>
                             <User size={20} />
                         </AvatarFallback>
@@ -775,6 +775,5 @@ const RunAndDebugPanel = () => {
       </div>
   );
 }
-
 
     
