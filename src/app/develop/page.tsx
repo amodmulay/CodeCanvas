@@ -5,7 +5,7 @@ import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight, User, LogOut, Moon, Sun } from "lucide-react";
+import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight, User, LogOut, Moon, Sun, Server, GitFork, HardDrive, Share2 } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
 import { TerminalPanel, type TerminalHandle } from "@/components/code-canvas/terminal-panel";
@@ -40,6 +40,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { MermaidChart } from "@/components/code-canvas/mermaid-chart";
 
 
 type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build" | "testing";
@@ -318,97 +319,77 @@ export default function CodeCanvas() {
       </div>
   )
   
-  const OtaPackageBuilderPanel = () => {
-    const [version, setVersion] = useState("1.0.0");
-    const [isSigned, setIsSigned] = useState(true);
-
-    const handleBuildPackage = () => {
-        toast({
-            title: "Package Build Queued",
-            description: `Version ${version} is being built and signed.`,
-        });
-    }
+    const BuildSystemPanel = () => {
+    const [selectedApp, setSelectedApp] = useState("avionics-portal");
     
-    const recentBuilds = [
-        { version: '0.9.5', target: 'Astrova Seatback', status: 'Success', time: '5m ago' },
-        { version: '0.9.4', target: 'IFE Generation 3', status: 'Failed', time: '2h ago' },
-        { version: '0.9.3', target: 'Cuttlefish Emulator', status: 'Success', time: '1d ago' },
-    ]
+    const apps = [
+        { id: "avionics-portal", name: "avionics-portal", status: "Synced", health: "Healthy" },
+        { id: "inflight-entertainment-api", name: "inflight-entertainment-api", status: "Synced", health: "Healthy" },
+        { id: "telemetry-service", name: "telemetry-service", status: "Progressing", health: "Degraded" },
+        { id: "ota-update-service", name: "ota-update-service", status: "Synced", health: "Healthy" },
+    ];
+    
+    const buildArchitectureDiagram = `
+\`\`\`mermaid
+graph TD
+    subgraph "CI/CD Pipeline (ArgoCD)"
+        A[Git Commit] --> B{Build Trigger};
+        B --> C[Build & Test];
+        C --> D{Containerize};
+        D --> E[Push to Registry];
+        E --> F[Deploy to Staging];
+        F --> G{Automated Tests};
+        G -- Success --> H[Promote to Production];
+        G -- Failure --> I[Rollback];
+    end
+\`\`\`
+`;
 
     return (
-        <div className="p-4 bg-card h-full space-y-6">
+        <div className="p-4 bg-card h-full space-y-4">
             <Card>
                 <CardHeader>
-                    <CardTitle>OTA Package Builder</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <Label htmlFor="build-target">
-                            <Package className="h-4 w-4 mr-2 inline-block" />
-                            Build Target
-                        </Label>
-                        <Select defaultValue="astrova-seatback">
-                            <SelectTrigger id="build-target">
-                                <SelectValue placeholder="Select a target" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="astrova-seatback">Astrova Seatback Display</SelectItem>
-                                <SelectItem value="IFE-gen3">IFE Generation 3</SelectItem>
-                                <SelectItem value="cuttlefish-emulator">Cuttlefish Emulator</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div>
-                        <Label htmlFor="commit-hash">
-                            <GitCommit className="h-4 w-4 mr-2 inline-block" />
-                            Commit
-                        </Label>
-                        <Input id="commit-hash" defaultValue="a1b2c3d - feat: initial UI" />
-                    </div>
-                    <div>
-                        <Label htmlFor="version">
-                            <Tag className="h-4 w-4 mr-2 inline-block" />
-                            Version
-                        </Label>
-                        <Input id="version" value={version} onChange={(e) => setVersion(e.target.value)} />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="sign-package" checked={isSigned} onCheckedChange={(checked) => setIsSigned(!!checked)} />
-                        <Label htmlFor="sign-package">Sign Release Package</Label>
-                    </div>
-                    <Button onClick={handleBuildPackage} className="w-full">
-                        <Send className="h-4 w-4 mr-2" />
-                        Package, Sign & Simulate
-                    </Button>
-                </CardContent>
-            </Card>
-
-            <Separator />
-            
-            <Card>
-                <CardHeader>
-                    <CardTitle>Recent Builds</CardTitle>
+                    <CardTitle className="flex items-center">
+                        <Server className="mr-2 h-5 w-5" />
+                        ArgoCD Build System
+                    </CardTitle>
+                    <CardDescription>Continuous Delivery for Avionics Services</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ul className="space-y-4">
-                        {recentBuilds.map((build, index) => (
-                            <li key={index} className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    {build.status === 'Success' ? <CheckCircle className="h-5 w-5 mr-3 text-green-500" /> : <XCircle className="h-5 w-5 mr-3 text-red-500" />}
-                                    <div>
-                                        <p className="font-medium">v{build.version} - {build.target}</p>
-                                        <p className="text-sm text-muted-foreground">{build.status}</p>
+                    <ul className="space-y-2">
+                        {apps.map((app) => (
+                            <li key={app.id}>
+                                <button 
+                                    onClick={() => setSelectedApp(app.id)}
+                                    className={`w-full p-2 rounded-md text-left ${selectedApp === app.id ? 'bg-accent' : 'hover:bg-muted'}`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <p className="font-medium text-sm">{app.name}</p>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`text-xs px-2 py-1 rounded-full ${app.status === 'Synced' ? 'bg-blue-500/20 text-blue-300' : 'bg-yellow-500/20 text-yellow-300 animate-pulse'}`}>{app.status}</span>
+                                            <span className={`text-xs px-2 py-1 rounded-full ${app.health === 'Healthy' ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}>{app.health}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center text-sm text-muted-foreground">
-                                    <Clock className="h-4 w-4 mr-1" />
-                                    {build.time}
-                                </div>
+                                </button>
                             </li>
                         ))}
                     </ul>
                 </CardContent>
             </Card>
+            
+            <Separator />
+
+            {selectedApp && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Build Architecture</CardTitle>
+                        <CardDescription>Diagram for {selectedApp}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <MermaidChart content={buildArchitectureDiagram} />
+                    </CardContent>
+                </Card>
+            )}
         </div>
     )
 }
@@ -743,7 +724,7 @@ const RunAndDebugPanel = () => {
               {activeView === 'files' && <FileExplorer fileSystem={fileSystem} onFileClick={handleOpenFile} />}
               {activeView === 'source-control' && <SourceControlPanel />}
               {activeView === 'run' && <RunAndDebugPanel />}
-              {activeView === 'build' && <OtaPackageBuilderPanel />}
+              {activeView === 'build' && <BuildSystemPanel />}
               {activeView === 'testing' && <TestingPanel />}
               {activeView === 'api-docs' && <ApiDocsPanel />}
               {activeView === 'containers' && <ContainersPanel />}
@@ -775,5 +756,3 @@ const RunAndDebugPanel = () => {
       </div>
   );
 }
-
-    
