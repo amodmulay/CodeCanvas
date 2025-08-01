@@ -16,7 +16,7 @@ interface Message {
 
 export function ChatPanel() {
   const [messages, setMessages] = React.useState<Message[]>([
-    { id: "1", text: "Hello! I'm your vibe coding agent. How can I help you accelerate your development today?", sender: "agent" },
+    { id: "1", text: "Hello! I'm your coding agent. I can help you accelerate your development! What can I do for you today?", sender: "agent" },
   ])
   const [input, setInput] = React.useState("")
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
