@@ -19,7 +19,9 @@ export default function LandingPage() {
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Solutions</Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link>
         </nav>
-        <Button variant="outline">Sign In</Button>
+        <Link href="/login">
+            <Button variant="outline">Sign In</Button>
+        </Link>
       </header>
 
       <main className="flex-grow flex items-center justify-center pt-20">
