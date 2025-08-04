@@ -11,11 +11,15 @@ This project, Avionics, is structured as a Next.js application with TypeScript a
     - `globals.css`: Global styles.
     - `layout.tsx`: Root layout component.
     - `page.tsx`: The application's main landing page.
+    - `login/page.tsx`: The user login page.
+    - `onboarding/page.tsx`: The developer onboarding selection page.
+    - `register/page.tsx`: The new developer registration page.
+    - `workspace/page.tsx`: The workspace selection page.
     - `develop/page.tsx`: The VS Code-like development environment page.
 - **`src/components/code-canvas`**: Contains components specific to the code canvas functionality.
     - `editor-tabs.tsx`: Manages and displays the open files in tabs, including support for rendering Mermaid diagrams.
     - `file-explorer.tsx`: Provides a file explorer interface.
-    - `ide-sidebar.tsx`: The main sidebar component for the IDE layout.
+    - `chat-panel.tsx`: Component for the "PAC Coding Agent" with model selection.
     - `mermaid-chart.tsx`: A component specifically for rendering Mermaid diagrams from text.
     - `source-control-panel.tsx`: Component for source control features.
     - `terminal-panel.tsx`: Component for the integrated terminal.
@@ -29,11 +33,20 @@ This project, Avionics, is structured as a Next.js application with TypeScript a
 
 ## Core Functionality Mapping:
 
-- **Landing Page**: The main entry point of the application is `src/app/page.tsx`, which provides an overview and a link to the development environment.
-- **File Navigation and Display**: The `src/components/code-canvas/file-explorer.tsx` component handles file browsing. `src/components/code-canvas/editor-tabs.tsx` is responsible for displaying the content of selected files, and it uses `src/components/code-canvas/mermaid-chart.tsx` to render any Mermaid diagrams found in Markdown files.
-- **Integrated Terminal**: The `src/components/code-canvas/terminal-panel.tsx` component provides the integrated terminal functionality.
-- **Layout and UI**: The overall layout of the IDE is managed by components within `src/components/code-canvas`. This now includes a `Menubar` at the top of the development page for global actions. Reusable UI components are located in `src/components/ui`.
-- **State Management**: State persistence and management of open files and the active file is handled within the `develop/page.tsx` component, utilizing React's state management and `localStorage`.
-- **Styling**: Tailwind CSS is used for styling, with the configuration in `tailwind.config.ts` and global styles in `src/app/globals.css`. The style guidelines are documented in `docs/blueprint.md`.
+- **Landing Page**: The main entry point of the application is `src/app/page.tsx`, which provides an overview and a link to the login flow. It features an animated text element.
+- **Authentication & Onboarding**:
+    - `src/app/login/page.tsx`: Handles user authentication with email/password or GitHub.
+    - `src/app/onboarding/page.tsx`: Allows new developers to select an onboarding path (internal or external).
+    - `src/app/register/page.tsx`: A simulated registration form for new developers.
+- **Workspace Selection**: After login, `src/app/workspace/page.tsx` allows users to select a development environment (e.g., Android, Python).
+- **Development Environment**: The `src/app/develop/page.tsx` component is the main IDE interface.
+    - **User Profile**: A profile icon in the header allows users to switch themes and log out.
+    - **File Navigation and Display**: `src/components/code-canvas/file-explorer.tsx` handles file browsing, and `src/components/code-canvas/editor-tabs.tsx` displays file content.
+    - **Source Control & Build System**: `src/components/code-canvas/source-control-panel.tsx` manages Git changes, and the "Build System" panel in `src/app/develop/page.tsx` simulates an ArgoCD view.
+    - **Integrated Terminal**: The `src/components/code-canvas/terminal-panel.tsx` provides terminal functionality.
+    - **AI Agent**: The `src/components/code-canvas/chat-panel.tsx` provides an AI assistant with selectable models.
+- **Layout and UI**: The overall layout of the IDE is managed by components within `src/components/code-canvas`. Reusable UI components are in `src/components/ui`.
+- **State Management**: State for open files and the active file is handled in `develop/page.tsx` using React state and `localStorage`.
+- **Styling**: Tailwind CSS is used for styling, with configuration in `tailwind.config.ts` and global styles in `src/app/globals.css`.
 - **AI Features**: Files in `src/ai` are related to any AI-driven features implemented in the application.
-- **Utility Functions**: Common utility functions used throughout the project are located in `src/lib/utils.ts`.
+- **Utility Functions**: Common utility functions are in `src/lib/utils.ts`.
