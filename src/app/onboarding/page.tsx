@@ -2,7 +2,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Building, Users, Plane, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Building, Users, Plane, ArrowRight, LogIn } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -11,13 +12,13 @@ const onboardingOptions = [
     name: "Internal Developer",
     icon: <Building className="h-12 w-12 text-primary" />,
     description: "Sign in with your Panasonic corporate account to access internal tools and repositories.",
-    path: "/workspace",
+    path: "/register",
   },
   {
     name: "External Developer",
     icon: <Users className="h-12 w-12 text-primary" />,
     description: "Register and set up your environment as a partner or third-party developer.",
-    path: "/workspace",
+    path: "/register",
   },
 ];
 
@@ -62,6 +63,14 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+       <div className="mt-8 text-center">
+         <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-primary hover:underline">
+              Sign In
+            </Link>
+          </p>
       </div>
     </div>
   );
