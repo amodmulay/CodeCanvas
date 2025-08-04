@@ -29,6 +29,7 @@ export const MermaidChart = ({ content }: MermaidChartProps) => {
       const mermaidContent = extractMermaidContent(content);
       if (mermaidContent) {
         try {
+          // The render function needs a unique ID for each graph
           const { svg } = await mermaid.render(`mermaid-graph-${Date.now()}`, mermaidContent);
           setSvg(svg);
         } catch (error) {
@@ -56,3 +57,5 @@ export const MermaidChart = ({ content }: MermaidChartProps) => {
     </div>
   );
 };
+
+    
