@@ -35,6 +35,10 @@ const models = [
     { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
     { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
     { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
+    { id: "claude-3-sonnet", name: "Claude 3 Sonnet" },
+    { id: "claude-3-opus", name: "Claude 3 Opus" },
+    { id: "mistral-large", name: "Mistral Large" },
+    { id: "mistral-small", name: "Mistral Small" },
 ]
 
 export function ChatPanel() {
