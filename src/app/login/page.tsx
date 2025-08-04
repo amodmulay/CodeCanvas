@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Github, Plane } from "lucide-react";
+import { Github, Plane, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -84,7 +85,15 @@ export default function LoginPage() {
             Sign In with GitHub
           </Button>
         </CardContent>
-        <CardFooter>
+        <Separator className="my-2" />
+        <CardFooter className="flex-col items-start gap-4 pt-4">
+           <div className="w-full">
+              <h3 className="text-sm font-medium text-center">New Developer?</h3>
+               <Button variant="outline" className="w-full mt-2" onClick={() => router.push('/onboarding')}>
+                Start Onboarding
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+           </div>
            <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <a
