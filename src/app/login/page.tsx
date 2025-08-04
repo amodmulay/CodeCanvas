@@ -25,8 +25,8 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate a successful login and redirect to the IDE
-    router.push("/develop");
+    // Simulate a successful login and redirect to the workspace selection
+    router.push("/workspace");
   };
 
   return (
@@ -79,7 +79,7 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <Button variant="outline" className="w-full" onClick={() => router.push('/develop')}>
+          <Button variant="outline" className="w-full" onClick={() => router.push('/workspace')}>
             <Github className="mr-2 h-4 w-4" />
             Sign In with GitHub
           </Button>
