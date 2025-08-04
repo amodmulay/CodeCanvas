@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="flex flex-col min-h-screen items-center justify-center bg-background p-4">
       <div className="flex items-center gap-2 mb-8">
         <Plane className="h-8 w-8 text-primary" />
-        <span className="text-3xl font-bold">Panasonic Avionics</span>
+        <span className="text-3xl font-bold">Panasonic Avionics Corporation</span>
       </div>
       <Card className="w-full max-w-sm">
         <CardHeader>
@@ -80,7 +80,7 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <Button variant="outline" className="w-full" onClick={() => router.push('/workspace')}>
+          <Button variant="outline" className="w-full" onClick={() => router.push('/develop')}>
             <Github className="mr-2 h-4 w-4" />
             Sign In with GitHub
           </Button>

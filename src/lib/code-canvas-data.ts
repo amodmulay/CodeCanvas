@@ -285,7 +285,7 @@ public class MainScreen extends Screen {
     @Override
     public Template onGetTemplate() {
         Row row = new Row.Builder()
-            .setTitle("Welcome to Panasonic Avionics!")
+            .setTitle("Welcome to Panasonic Avionics Corporation!")
             .addText("Select an option to continue.")
             .build();
 

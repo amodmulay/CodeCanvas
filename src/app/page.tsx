@@ -25,7 +25,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <Plane className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">Panasonic Avionics</span>
+          <span className="text-xl font-bold">Panasonic Avionics Corporation</span>
         </div>
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Products</Link>

@@ -33,7 +33,7 @@ export default function OnboardingPage() {
     <div className="flex flex-col min-h-screen items-center justify-center bg-background p-4">
       <div className="flex items-center gap-2 mb-8">
         <Plane className="h-8 w-8 text-primary" />
-        <span className="text-3xl font-bold">Panasonic Avionics</span>
+        <span className="text-3xl font-bold">Panasonic Avionics Corporation</span>
       </div>
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold">Developer Onboarding</h1>
