@@ -6,6 +6,7 @@ import { Plane, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const words = ["AI", "INNOVATION", "SPEED", "STABILITY"];
 
@@ -27,11 +28,14 @@ export default function LandingPage() {
           <Plane className="h-6 w-6 text-primary" />
           <span className="text-xl font-bold">Panasonic Avionics Corporation</span>
         </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Products</Link>
-          <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Solutions</Link>
-          <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link>
-        </nav>
+        <div className="flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Products</Link>
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Solutions</Link>
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link>
+            </nav>
+            <ThemeToggle />
+        </div>
       </header>
 
       <main className="flex-grow flex items-center justify-center pt-20">

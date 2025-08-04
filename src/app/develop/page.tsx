@@ -4,7 +4,6 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { File, GitMerge, Play, Bug, BookMarked, Cpu, Puzzle, Archive, Package, GitCommit, Tag, Send, CheckCircle, XCircle, Clock, TestTubeDiagonal, RefreshCw, StopCircle, ArrowRight, User, LogOut, Moon, Sun, Server, GitFork, HardDrive, Share2 } from "lucide-react";
 import { FileExplorer } from "@/components/code-canvas/file-explorer";
 import { EditorTabs } from "@/components/code-canvas/editor-tabs";
@@ -41,6 +40,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MermaidChart } from "@/components/code-canvas/mermaid-chart";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 
 type View = "files" | "source-control" | "run" | "api-docs" | "containers" | "extensions" | "build" | "testing";
@@ -62,7 +62,6 @@ const loadingMessages = [
 
 const UserProfile = () => {
     const router = useRouter();
-    const { setTheme } = useTheme();
 
     return (
         <DropdownMenu>
@@ -81,15 +80,6 @@ const UserProfile = () => {
                     <p>Jane Doe</p>
                     <p className="text-xs text-muted-foreground font-normal">jane.doe@example.com</p>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setTheme('light')}>
-                    <Sun className="mr-2 h-4 w-4" />
-                    <span>Light Theme</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
-                    <Moon className="mr-2 h-4 w-4" />
-                    <span>Dark Theme</span>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push('/login')}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -713,7 +703,8 @@ const RunAndDebugPanel = () => {
                       </MenubarContent>
                   </MenubarMenu>
               </Menubar>
-              <div className="pr-4">
+              <div className="flex items-center gap-2 pr-2">
+                <ThemeToggle />
                 <UserProfile />
               </div>
           </div>
@@ -756,5 +747,3 @@ const RunAndDebugPanel = () => {
       </div>
   );
 }
-
-    
