@@ -2,11 +2,28 @@
 "use client"
 
 import * as React from "react"
-import { Sparkles, Send, User } from "lucide-react"
+import { Sparkles, Send, User, Settings } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+
 
 interface Message {
   id: string
@@ -14,11 +31,18 @@ interface Message {
   sender: "user" | "agent"
 }
 
+const models = [
+    { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
+    { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
+    { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
+]
+
 export function ChatPanel() {
   const [messages, setMessages] = React.useState<Message[]>([
     { id: "1", text: "Hello! I'm your coding agent. I can help you accelerate your development! What can I do for you today?", sender: "agent" },
   ])
   const [input, setInput] = React.useState("")
+  const [selectedModel, setSelectedModel] = React.useState(models[0].id)
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
 
   const handleSendMessage = () => {
@@ -44,9 +68,33 @@ export function ChatPanel() {
 
   return (
     <div className="h-full w-full bg-card flex flex-col border-l">
-      <div className="flex items-center p-2 border-b bg-card flex-shrink-0">
-        <Sparkles className="w-5 h-5 mr-2 text-primary" />
-        <h3 className="text-sm font-medium">Vibe Coding Agent</h3>
+      <div className="flex items-center justify-between p-2 border-b bg-card flex-shrink-0">
+        <div className="flex items-center">
+            <Sparkles className="w-5 h-5 mr-2 text-primary" />
+            <h3 className="text-sm font-medium">PAC Coding Agent</h3>
+        </div>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7">
+                    <Settings className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 p-4">
+                <div className="space-y-2">
+                    <Label htmlFor="model-select">Agent Model</Label>
+                    <Select value={selectedModel} onValueChange={setSelectedModel}>
+                        <SelectTrigger id="model-select">
+                            <SelectValue placeholder="Select a model" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {models.map(model => (
+                                <SelectItem key={model.id} value={model.id}>{model.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex-grow overflow-hidden">
         <ScrollArea className="h-full">
@@ -89,7 +137,7 @@ export function ChatPanel() {
       <div className="p-2 border-t bg-card flex-shrink-0">
         <div className="relative">
           <Input
-            placeholder="Ask your vibe agent..."
+            placeholder="Ask your agent..."
             className="pr-10"
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -113,5 +161,3 @@ export function ChatPanel() {
     </div>
   )
 }
-
-    
