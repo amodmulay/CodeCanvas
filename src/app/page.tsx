@@ -2,13 +2,24 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Plane, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
+const words = ["AI", "INNOVATION", "SPEED", "STABILITY"];
+
 export default function LandingPage() {
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => (prevIndex + 1) % words.length);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground overflow-auto">
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-sm">
@@ -21,9 +32,6 @@ export default function LandingPage() {
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Solutions</Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link>
         </nav>
-        <Link href="/login">
-            <Button variant="outline">Sign In</Button>
-        </Link>
       </header>
 
       <main className="flex-grow flex items-center justify-center pt-20">
@@ -47,14 +55,20 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
-            <Image
-              src="https://www.panasonic.aero/hs-fs/hubfs/00PAC%20-%20Panasonic%20Avionics/Home/Astrova-04.jpg?width=1920&height=1080&name=Astrova-04.jpg"
-              alt="Hero"
-              width={600}
-              height={400}
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
-              data-ai-hint="inflight entertainment system"
-            />
+             <div className="flex items-center justify-center lg:order-last">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={words[index]}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-6xl font-bold text-primary tracking-widest"
+                    >
+                        {words[index]}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
           </div>
         </div>
       </main>
